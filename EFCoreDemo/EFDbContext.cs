@@ -6,10 +6,12 @@ namespace EFCoreDemo;
 internal class EFDbContext : DbContext
 {
     public DbSet<Book> Books { get; set; }
+    public DbSet<Author> Authors { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connString = "Data Source=(localdb)\\MSSQLLocalDB;DataBase=EFDemo;Integrated Security=True;";
         optionsBuilder.UseSqlServer(connString);
+        optionsBuilder.LogTo(Console.WriteLine);
         //base.OnConfiguring(optionsBuilder);
     }
 
@@ -18,9 +20,9 @@ internal class EFDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
-        modelBuilder.Entity<Book>().ToView("Book").Ignore(b => b.Price).HasKey(b => b.Id);
+        //modelBuilder.Entity<Book>().ToView("Book").Ignore(b => b.Price).HasKey(b => b.Id);
         modelBuilder.Entity<Book>().HasIndex(b => b.AuthorName);                    // 索引
         modelBuilder.Entity<Book>().HasIndex(b => new { b.Title, b.PublishTime });  // 复合索引
-        modelBuilder.Entity<Book>().Property(b => b.AuthorName).HasColumnName("Author").HasColumnType("varchar(20)");//设置列
+        //modelBuilder.Entity<Book>().Property(b => b.AuthorName).HasColumnName("Author").HasColumnType("varchar(20)");//设置列
     }
 }

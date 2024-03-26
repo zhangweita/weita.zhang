@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCoreDemo.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20240325085529_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240326025429_InitCreate")]
+    partial class InitCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,26 @@ namespace EFCoreDemo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EFCoreDemo.Model.Author", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasComment("作者");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Authors", null, t =>
+                        {
+                            t.HasComment("作者信息");
+                        });
+                });
 
             modelBuilder.Entity("EFCoreDemo.Model.Book", b =>
                 {
@@ -55,10 +75,16 @@ namespace EFCoreDemo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Book", null, t =>
+                    b.HasIndex("AuthorName");
+
+                    b.HasIndex("Title", "PublishTime");
+
+                    b.ToTable("Books", null, t =>
                         {
                             t.HasComment("书籍信息");
                         });
+
+                    b.ToView("Book", (string)null);
                 });
 #pragma warning restore 612, 618
         }

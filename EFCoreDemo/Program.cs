@@ -12,6 +12,15 @@ using EFDbContext Db = new();
 //Db.Books.Add(new() { Title = "放弃自由的鸟", AuthorName = "阿刁", Price = 99, PublishTime = DateTime.Now, });
 //Db.Books.Add(new() { Title = "没有自由的鸟", AuthorName = "阿刁", Price = 246, PublishTime = DateTime.Now, });
 //await Db.SaveChangesAsync();
+
+Author author = new() { Name = "洪洪洪洪洪" };
+Console.WriteLine("添加前：" + JsonConvert.SerializeObject(author));
+Db.Authors.Add(author);
+Console.WriteLine("添加后：" + JsonConvert.SerializeObject(author));
+await Db.SaveChangesAsync();
+Console.WriteLine("保存后：" + JsonConvert.SerializeObject(author));
+
+
 #endregion
 
 #region 查询
@@ -52,6 +61,8 @@ using EFDbContext Db = new();
 //Db.Books.Add(b);
 //await Db.SaveChangesAsync();
 //Console.WriteLine(JsonConvert.SerializeObject(Db.Books.Single(b => b.Title == "自由的鸟123")));
-Db.Books.Remove(Db.Books.Single(b => b.Title == "自由的鸟123"));
-await Db.SaveChangesAsync();
+//Db.Books.Remove(Db.Books.Single(b => b.Title == "自由的鸟123"));
+//await Db.SaveChangesAsync();
 #endregion
+
+
