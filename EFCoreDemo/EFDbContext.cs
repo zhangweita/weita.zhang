@@ -1,5 +1,7 @@
 ﻿using EFCoreDemo.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EFCoreDemo;
 
@@ -11,7 +13,15 @@ internal class EFDbContext : DbContext
     {
         string connString = "Data Source=(localdb)\\MSSQLLocalDB;DataBase=EFDemo;Integrated Security=True;";
         optionsBuilder.UseSqlServer(connString);
-        optionsBuilder.LogTo(Console.WriteLine);
+        optionsBuilder.LogTo(msg =>
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
+            using StreamWriter stream = new StreamWriter(path, true, Encoding.Default);
+            stream.Write(DateTime.Now.ToString() + ":" + msg);
+            stream.Write("\r\n");
+            stream.Flush();
+            stream.Close();
+        });
         //base.OnConfiguring(optionsBuilder);
     }
 
