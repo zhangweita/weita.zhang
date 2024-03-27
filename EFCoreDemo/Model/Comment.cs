@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
 
 namespace EFCoreDemo.Model;
 
 internal class Comment
 {
     public long Id { get; set; }
+    [JsonIgnore]
     public Article Article { get; set; }
     public string? Message { get; set; }
 }

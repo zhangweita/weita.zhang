@@ -1,7 +1,6 @@
 ﻿using EFCoreDemo.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace EFCoreDemo;
 
@@ -9,6 +8,11 @@ internal class EFDbContext : DbContext
 {
     public DbSet<Book> Books { get; set; }
     public DbSet<Author> Authors { get; set; }
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Leave> Leaves { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<Delivery> Deliveries { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connString = "Data Source=(localdb)\\MSSQLLocalDB;DataBase=EFDemo;Integrated Security=True;";

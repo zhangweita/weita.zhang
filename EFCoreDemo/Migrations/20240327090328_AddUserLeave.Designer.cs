@@ -4,6 +4,7 @@ using EFCoreDemo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCoreDemo.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240327090328_AddUserLeave")]
+    partial class AddUserLeave
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,37 +134,6 @@ namespace EFCoreDemo.Migrations
                     b.ToTable("Comments", (string)null);
                 });
 
-            modelBuilder.Entity("EFCoreDemo.Model.Delivery", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Deliveries", (string)null);
-                });
-
             modelBuilder.Entity("EFCoreDemo.Model.Leave", b =>
                 {
                     b.Property<int>("Id")
@@ -200,29 +172,6 @@ namespace EFCoreDemo.Migrations
                     b.ToTable("Leaves", (string)null);
                 });
 
-            modelBuilder.Entity("EFCoreDemo.Model.Order", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders", (string)null);
-                });
-
             modelBuilder.Entity("EFCoreDemo.Model.User", b =>
                 {
                     b.Property<int>("Id")
@@ -253,17 +202,6 @@ namespace EFCoreDemo.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("EFCoreDemo.Model.Delivery", b =>
-                {
-                    b.HasOne("EFCoreDemo.Model.Order", "Order")
-                        .WithOne("Delivery")
-                        .HasForeignKey("EFCoreDemo.Model.Delivery", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("EFCoreDemo.Model.Leave", b =>
                 {
                     b.HasOne("EFCoreDemo.Model.User", "Approver")
@@ -284,11 +222,6 @@ namespace EFCoreDemo.Migrations
             modelBuilder.Entity("EFCoreDemo.Model.Article", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("EFCoreDemo.Model.Order", b =>
-                {
-                    b.Navigation("Delivery");
                 });
 #pragma warning restore 612, 618
         }
