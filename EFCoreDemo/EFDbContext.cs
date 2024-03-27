@@ -13,6 +13,8 @@ internal class EFDbContext : DbContext
     public DbSet<Leave> Leaves { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<Student> Students { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connString = "Data Source=(localdb)\\MSSQLLocalDB;DataBase=EFDemo;Integrated Security=True;";

@@ -2,7 +2,6 @@
 using EFCoreDemo.Model;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 using EFDbContext Db = new();
@@ -67,23 +66,44 @@ using EFDbContext Db = new();
 
 
 
-Order order = new()
-{
-    Address = "某某市某某区",
-    Name = "USB充电器"
-};
+//Order order = new()
+//{
+//    Address = "某某市某某区",
+//    Name = "USB充电器"
+//};
 
-Delivery delivery = new()
-{
-    CompanyName = "蜗牛快递",
-    Number = "SN333322888",
-    Order = order
-};
-Db.Deliveries.Add(delivery);
+//Delivery delivery = new()
+//{
+//    CompanyName = "蜗牛快递",
+//    Number = "SN333322888",
+//    Order = order
+//};
+//Db.Deliveries.Add(delivery);
+//await Db.SaveChangesAsync();
+
+//Order order1 = await Db.Orders.Include(o => o.Delivery).FirstAsync(o => o.Name.Contains("充电器"));
+//Console.WriteLine(JsonConvert.SerializeObject(order1, Formatting.Indented));
+
+Student s1 = new() { Name = "tom"   };
+Student s2 = new() { Name = "lily"  };
+Student s3 = new() { Name = "lucy"  };
+Student s4 = new() { Name = "tim"   };
+Student s5 = new() { Name = "lina"  };
+
+Teacher t1 = new() { Name = "杨中科"} ;
+Teacher t2 = new() { Name = "张三"   };
+Teacher t3 = new() { Name = "李四"   };
+t1.Students.Add(s1);
+t1.Students.Add(s2);
+t1.Students.Add(s3);
+t2.Students.Add(s1);
+t2.Students.Add(s3);
+t2.Students.Add(s5);
+t3.Students.Add(s2);
+t3.Students.Add(s4);
+Db.AddRange(t1, t2, t3);
+Db.AddRange(s1, s2, s3, s4, s5);
 await Db.SaveChangesAsync();
-
-Order order1 = await Db.Orders.Include(o => o.Delivery).FirstAsync(o => o.Name.Contains("充电器"));
-Console.WriteLine(JsonConvert.SerializeObject(order1, Formatting.Indented));
 
 #endregion
 
