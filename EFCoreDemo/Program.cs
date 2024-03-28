@@ -84,26 +84,28 @@ using EFDbContext Db = new();
 //Order order1 = await Db.Orders.Include(o => o.Delivery).FirstAsync(o => o.Name.Contains("充电器"));
 //Console.WriteLine(JsonConvert.SerializeObject(order1, Formatting.Indented));
 
-Student s1 = new() { Name = "tom"   };
-Student s2 = new() { Name = "lily"  };
-Student s3 = new() { Name = "lucy"  };
-Student s4 = new() { Name = "tim"   };
-Student s5 = new() { Name = "lina"  };
 
-Teacher t1 = new() { Name = "杨中科"} ;
-Teacher t2 = new() { Name = "张三"   };
-Teacher t3 = new() { Name = "李四"   };
-t1.Students.Add(s1);
-t1.Students.Add(s2);
-t1.Students.Add(s3);
-t2.Students.Add(s1);
-t2.Students.Add(s3);
-t2.Students.Add(s5);
-t3.Students.Add(s2);
-t3.Students.Add(s4);
-Db.AddRange(t1, t2, t3);
-Db.AddRange(s1, s2, s3, s4, s5);
-await Db.SaveChangesAsync();
+
+//Student s1 = new() { Name = "tom"   };
+//Student s2 = new() { Name = "lily"  };
+//Student s3 = new() { Name = "lucy"  };
+//Student s4 = new() { Name = "tim"   };
+//Student s5 = new() { Name = "lina"  };
+
+//Teacher t1 = new() { Name = "杨中科"} ;
+//Teacher t2 = new() { Name = "张三"   };
+//Teacher t3 = new() { Name = "李四"   };
+//t1.Students.Add(s1);
+//t1.Students.Add(s2);
+//t1.Students.Add(s3);
+//t2.Students.Add(s1);
+//t2.Students.Add(s3);
+//t2.Students.Add(s5);
+//t3.Students.Add(s2);
+//t3.Students.Add(s4);
+//Db.AddRange(t1, t2, t3);
+//Db.AddRange(s1, s2, s3, s4, s5);
+//await Db.SaveChangesAsync();
 
 #endregion
 
@@ -132,7 +134,15 @@ await Db.SaveChangesAsync();
 
 //Article article = Db.Articles.Include(a => a.Comments).Single(a => a.Id == 1);
 //Console.WriteLine(JsonConvert.SerializeObject(article, Formatting.Indented));
+
+
+foreach (var teacher in Db.Teachers.Include(t => t.Students))
+{
+    Console.WriteLine($"{teacher.Name} has students:");
+    foreach (var student in teacher.Students) Console.WriteLine($"-------{student.Name}");
+}
 #endregion
+
 
 #region 改
 //Book book = Db.Books.Single(b => b.Title == "不是很自由的鸟");
