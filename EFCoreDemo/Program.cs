@@ -1,7 +1,9 @@
 ﻿using EFCoreDemo;
 using EFCoreDemo.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
+using System.Linq;
 
 
 using EFDbContext Db = new();
@@ -107,6 +109,18 @@ using EFDbContext Db = new();
 //Db.AddRange(s1, s2, s3, s4, s5);
 //await Db.SaveChangesAsync();
 
+
+
+//Console.WriteLine("请输入最低价格");
+//double price = double.Parse(Console.ReadLine()!);
+//Console.WriteLine("请输入姓名");
+//string name = Console.ReadLine()!;
+
+//int rows = await Db.Database.ExecuteSqlInterpolatedAsync($@"
+//                Insert Into Books (Title,PublishTime,Price,AuthorName)
+//                Select Title,PublishTime,Price,{name} From Books where Price>{price}");
+
+//Console.WriteLine($"affected rows:{rows}");
 #endregion
 
 #region 查询
@@ -136,11 +150,55 @@ using EFDbContext Db = new();
 //Console.WriteLine(JsonConvert.SerializeObject(article, Formatting.Indented));
 
 
-foreach (var teacher in Db.Teachers.Include(t => t.Students))
-{
-    Console.WriteLine($"{teacher.Name} has students:");
-    foreach (var student in teacher.Students) Console.WriteLine($"-------{student.Name}");
-}
+//foreach (var teacher in Db.Teachers.Include(t => t.Students))
+//{
+//    Console.WriteLine($"{teacher.Name} has students:");
+//    foreach (var student in teacher.Students) Console.WriteLine($"-------{student.Name}");
+//}
+
+
+
+//var books = Db.Books.Where(b => b.Id > 1);
+//foreach (var b in books)
+//{
+//    Console.WriteLine(b.Id + "," + b.Title);
+//    foreach (var a in Db.Authors.ToList())
+//    {
+//        Console.WriteLine(a.Id);
+//    }
+//}
+
+
+
+//Console.WriteLine("请输入年份");
+//int year = int.Parse(Console.ReadLine()!);
+//var books = Db.Books.FromSqlInterpolated($@"select * from Books where DatePart(year, PublishTime)>{year} order by newid()");
+
+//foreach (Book book in books)
+//{
+//    Console.WriteLine(book.Title);
+//}
+
+Book[] books = Db.Books.Where(b => b.AuthorName == "张伟塔").Take(3).ToArray();
+(Book b1, Book b2, Book b3) = (books[0], books[1], books[2]);
+Book b4 = new() { Title = "零基础学C#", AuthorName = "夏传洪" };
+Book b5 = new() { Title = "如何搭讪富婆", AuthorName = "袁星旺" };
+b1.Title = "南洋理通的疗效";
+Db.Books.Remove(b3);
+Db.Books.Add(b4);
+
+ EntityEntry entry1 = Db.Entry(b1);
+ EntityEntry entry2 = Db.Entry(b2);
+ EntityEntry entry3 = Db.Entry(b3);
+ EntityEntry entry4 = Db.Entry(b4);
+ EntityEntry entry5 = Db.Entry(b5);
+ Console.WriteLine("b1.State:" + entry1.State);
+ Console.WriteLine("b1.DebugView:" + entry1.DebugView.LongView);
+ Console.WriteLine("b2.State:" + entry2.State);
+ Console.WriteLine("b3.State:" + entry3.State);
+ Console.WriteLine("b4.State:" + entry4.State);
+ Console.WriteLine("b5.State:" + entry5.State);
+
 #endregion
 
 
