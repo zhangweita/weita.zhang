@@ -4,6 +4,7 @@ using EFCoreDemo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCoreDemo.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402024110_ModifyHouseId")]
+    partial class ModifyHouseId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,7 +182,6 @@ namespace EFCoreDemo.Migrations
                         .HasComment("房子名称");
 
                     b.Property<string>("Owner")
-                        .IsConcurrencyToken()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasComment("房子所有者");

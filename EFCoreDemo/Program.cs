@@ -3,6 +3,7 @@ using EFCoreDemo.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
+using System;
 using System.Linq;
 
 
@@ -121,7 +122,68 @@ using EFDbContext Db = new();
 //                Select Title,PublishTime,Price,{name} From Books where Price>{price}");
 
 //Console.WriteLine($"affected rows:{rows}");
+
+//Db.Houses.AddRange([
+//    new() { Name = "汤臣一品" },
+//    new() { Name = "深圳湾一号" }
+//]);
+
+//Db.Houses.Find(1)!.Owner = null;
+//await Db.SaveChangesAsync();
+
+
+//Console.WriteLine("请输入你的姓名：");
+//string name = Console.ReadLine()!;
+//using var tran = await Db.Database.BeginTransactionAsync();
+//Console.WriteLine($"准备Select  {DateTime.Now.TimeOfDay}");
+
+//var h1 = await Db.Houses.FromSqlInterpolated($"select * from Houses with(rowlock,UpdLock) where Id=1").SingleAsync();
+//Console.WriteLine($"完成select  {DateTime.Now.TimeOfDay}");
+
+//if (string.IsNullOrEmpty(h1.Owner))
+//{
+//    await Task.Delay(5000);
+//    h1.Owner = name;
+//    await Db.SaveChangesAsync();
+//    Console.WriteLine("到手了");
+//}
+//else
+//{
+//    if (h1.Owner == name) Console.WriteLine("该房子已属于你，不用抢了");
+//    else Console.WriteLine($"该房子已被{name}抢走了");
+//}
+//await tran.CommitAsync();
+
+using EFDbContext Db = new();
+Console.WriteLine("请输入您的姓名");
+string name = Console.ReadLine()!;
+var h1 = await Db.Houses.SingleAsync(h => h.Id == 1);
+if (string.IsNullOrEmpty(h1.Owner))
+{
+    await Task.Delay(5000);
+    h1.Owner = name;
+    try
+    {
+        await Db.SaveChangesAsync();
+        Console.WriteLine("抢到手了");
+    }
+    catch (DbUpdateConcurrencyException ex)
+    {
+        var entry = ex.Entries.First();
+        var dbValues = await entry.GetDatabaseValuesAsync();
+        string newOwner = dbValues!.GetValue<string>(nameof(House.Owner));
+        Console.WriteLine($"并发冲突，被{newOwner}提前抢走了");
+    }
+}
+else
+{
+    if (h1.Owner == name) Console.WriteLine("这个房子已经是你的了，不用抢");
+    else Console.WriteLine($"这个房子已经被{h1.Owner}抢走了");
+}
+Console.ReadLine();
 #endregion
+
+
 
 #region 查询
 //Console.WriteLine("***所有书***");
@@ -179,25 +241,26 @@ using EFDbContext Db = new();
 //    Console.WriteLine(book.Title);
 //}
 
-Book[] books = Db.Books.Where(b => b.AuthorName == "张伟塔").Take(3).ToArray();
-(Book b1, Book b2, Book b3) = (books[0], books[1], books[2]);
-Book b4 = new() { Title = "零基础学C#", AuthorName = "夏传洪" };
-Book b5 = new() { Title = "如何搭讪富婆", AuthorName = "袁星旺" };
-b1.Title = "南洋理通的疗效";
-Db.Books.Remove(b3);
-Db.Books.Add(b4);
 
- EntityEntry entry1 = Db.Entry(b1);
- EntityEntry entry2 = Db.Entry(b2);
- EntityEntry entry3 = Db.Entry(b3);
- EntityEntry entry4 = Db.Entry(b4);
- EntityEntry entry5 = Db.Entry(b5);
- Console.WriteLine("b1.State:" + entry1.State);
- Console.WriteLine("b1.DebugView:" + entry1.DebugView.LongView);
- Console.WriteLine("b2.State:" + entry2.State);
- Console.WriteLine("b3.State:" + entry3.State);
- Console.WriteLine("b4.State:" + entry4.State);
- Console.WriteLine("b5.State:" + entry5.State);
+//Book[] books = Db.Books.Where(b => b.AuthorName == "张伟塔").Take(3).ToArray();
+//(Book b1, Book b2, Book b3) = (books[0], books[1], books[2]);
+//Book b4 = new() { Title = "零基础学C#", AuthorName = "夏传洪" };
+//Book b5 = new() { Title = "如何搭讪富婆", AuthorName = "袁星旺" };
+//b1.Title = "南洋理通的疗效";
+//Db.Books.Remove(b3);
+//Db.Books.Add(b4);
+
+// EntityEntry entry1 = Db.Entry(b1);
+// EntityEntry entry2 = Db.Entry(b2);
+// EntityEntry entry3 = Db.Entry(b3);
+// EntityEntry entry4 = Db.Entry(b4);
+// EntityEntry entry5 = Db.Entry(b5);
+// Console.WriteLine("b1.State:" + entry1.State);
+// Console.WriteLine("b1.DebugView:" + entry1.DebugView.LongView);
+// Console.WriteLine("b2.State:" + entry2.State);
+// Console.WriteLine("b3.State:" + entry3.State);
+// Console.WriteLine("b4.State:" + entry4.State);
+// Console.WriteLine("b5.State:" + entry5.State);
 
 #endregion
 
