@@ -154,7 +154,6 @@ using EFDbContext Db = new();
 //}
 //await tran.CommitAsync();
 
-using EFDbContext Db = new();
 Console.WriteLine("请输入您的姓名");
 string name = Console.ReadLine()!;
 var h1 = await Db.Houses.SingleAsync(h => h.Id == 1);
@@ -181,6 +180,8 @@ else
     else Console.WriteLine($"这个房子已经被{h1.Owner}抢走了");
 }
 Console.ReadLine();
+
+
 #endregion
 
 
