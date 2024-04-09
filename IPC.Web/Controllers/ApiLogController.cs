@@ -1,4 +1,5 @@
 ﻿using IPC.Web.Services;
+using IPC.Web.ViewModels.ApiLog;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IPC.Web.Controllers;
@@ -13,25 +14,28 @@ public class ApiLogController : Controller
         this._apiLogService = _apiLogService;
     }
 
-    public async Task<IActionResult> Index(int pageNum = 1)
+    public IActionResult Index()
     {
-        int pageSize = 50;
-        var logList = await _apiLogService.GetLogListAsync(pageNum, ViewBag.PageSize);
+        ViewBag.PageIndex = 1;
+        ViewBag.PageSize = 15;
+        ViewBag.LineList = new[] { "X1", "X2", "A1", "A2", "A3", "C1", "C2", "C3" };
+        ViewBag.EquipmentList = new[] { "X1", "X2", "A1", "A2", "A3", "C1", "C2", "C3" };
+        //ApiLogPaginationInfo pageInfo = await _apiLogService.GetLogListAsync(ViewBag.PageIndex, ViewBag.PageSize);
+        //ViewBag.RecordCount = pageInfo.RecordCount;
+        //ViewBag.PageCount = pageInfo.PageCount;
 
-        ViewBag.PageIndex = pageNum;
-        ViewBag.PageSize = pageSize;
-        ViewBag.RecordCount = logList.Count;
-        ViewBag.PageCount = Math.Ceiling(logList.Count() * 1.0 / pageSize);
-
-        return View(logList);
+        return View();
     }
 
-    //public async Task<IActionResult> GetLogListAsync(int pageNum)
-    //{
-    //    ViewBag.PageSize = ViewBag.PageSize ?? 50;
-    //    var logList = await _apiLogService.GetLogListAsync(pageNum, ViewBag.PageSize);
-    //    return View(logList);
-    //}
-    //public async Task<IActionResult> GetPreviousAsync() => await GetLogListAsync(ViewBag.PageNum - 1);
-    //public async Task<IActionResult> GetNextAsync() => await GetLogListAsync(ViewBag.PageNum + 1);
+    public async Task<IActionResult> GetPageData(int pageIndex = 1)
+    {
+        int pageSize = ViewBag.PageSize;
+        ApiLogPaginationInfo pageInfo = await _apiLogService.GetLogListAsync(pageIndex, pageSize);
+
+        ViewBag.PageIndex = pageIndex;
+        ViewBag.RecordCount = pageInfo.RecordCount;
+        ViewBag.PageCount = pageInfo.PageCount;
+
+        return View("Index", pageInfo.QueryLogList);
+    }
 }

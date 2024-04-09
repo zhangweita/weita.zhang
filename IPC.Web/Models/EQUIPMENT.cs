@@ -1,4 +1,7 @@
-﻿namespace IPC.Web.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace IPC.Web.Models;
 
 public class EQUIPMENT
 {
@@ -26,4 +29,12 @@ public class EQUIPMENT
     /// 工作中心
     /// </summary>
     public string WORKCENTER { get; set; }
+}
+
+public class EquipmentConfig : IEntityTypeConfiguration<EQUIPMENT>
+{
+    public void Configure(EntityTypeBuilder<EQUIPMENT> builder)
+    {
+        builder.HasNoKey();
+    }
 }

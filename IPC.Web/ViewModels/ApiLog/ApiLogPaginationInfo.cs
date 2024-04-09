@@ -2,9 +2,21 @@
 
 namespace IPC.Web.ViewModels.ApiLog;
 
+/// <summary>
+/// 接口日志分页信息
+/// </summary>
 public class ApiLogPaginationInfo
 {
-    public int PageSize { get; set; }
-    public int CurrentPageNum { get; set; }
-    public List<API_LOG> LogList { get; set; }
+    /// <summary>
+    /// 记录数
+    /// </summary>
+    public int RecordCount { get; set; }
+    /// <summary>
+    /// 总页数
+    /// </summary>
+    public int PageCount { get; set; }
+    /// <summary>
+    /// 单页数据集
+    /// </summary>
+    public List<API_LOG> QueryLogList { get; set; }
 }

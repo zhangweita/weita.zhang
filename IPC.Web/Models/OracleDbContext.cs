@@ -11,6 +11,7 @@ public class OracleDbContext : DbContext
     }
 
     public DbSet<API_LOG> ApiLogs { get; set; }
+    public DbSet<EQUIPMENT> Equipments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -21,5 +22,6 @@ public class OracleDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
     }
 }
