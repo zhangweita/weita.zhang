@@ -1,16 +1,19 @@
-using IPC.Web.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using IPC.Web.Common.ClassTypes;
+using IPC.Web.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogging(logger => logger.AddConsole());
 
-var connectionString = builder.Configuration.GetConnectionString("SqliteDbContextConnection") ?? throw new InvalidOperationException("Connection string 'SqliteDbContextConnection' not found.");
-builder.Services.AddDbContext<SqliteDbContext>(options => options.UseSqlite(connectionString));
+//var connectionString = builder.Configuration.GetConnectionString("SqliteDbContextConnection") ?? throw new InvalidOperationException("Connection string 'SqliteDbContextConnection' not found.");
+//builder.Services.AddDbContext<SqliteDbContext>(options => options.UseSqlite(connectionString));
+//builder.Services.AddDbContext<EFCoreDbContext>(options => options.UseOracle(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SqliteDbContext>();
+builder.Services.AddTransient<IDbContextFactory, DbContextFactory>();
+builder.Services.AddScoped<ApiLogService>();
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SqliteDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -39,7 +42,7 @@ app.UseEndpoints(endpoints =>
     endpoints?.MapRazorPages();
     endpoints?.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=ApiLog}/{action=Index}/{id?}");
 });
 
 

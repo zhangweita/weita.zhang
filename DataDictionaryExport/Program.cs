@@ -49,7 +49,7 @@ titleCellStyle.FillBackgroundColor = HSSFColor.LightOrange.Index;   //背景颜�
 titleCellStyle.FillPattern = FillPattern.SolidForeground;
 
 
-// 数据单元格
+// 数据单元格样式
 ICellStyle dataCellStyle = book.CreateCellStyle();
 dataCellStyle.SetFont(font);
 dataCellStyle.BorderBottom = BorderStyle.Thin;
