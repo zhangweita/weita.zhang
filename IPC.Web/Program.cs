@@ -1,5 +1,5 @@
 using IPC.Web.Common.ClassTypes;
-using IPC.Web.Services;
+using IPC.Presentation.Web.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

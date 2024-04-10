@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IPC.Web.Controllers;
+namespace IPC.Presentation.Web.Controllers;
 
 public class AdminController : Controller
 {

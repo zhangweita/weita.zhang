@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace IPC.Web.Models;
+namespace IPC.Presentation.Web.Models;
 
 public class EQUIPMENT
 {

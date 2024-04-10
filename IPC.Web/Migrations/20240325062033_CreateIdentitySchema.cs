@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace IPC.Web.Migrations
+namespace IPC.Presentation.Web.Migrations
 {
     /// <inheritdoc />
     public partial class CreateIdentitySchema : Migration

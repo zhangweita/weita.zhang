@@ -1,11 +1,6 @@
-﻿
-using IPC.Web.Common.ClassTypes;
-using IPC.Web.Models;
-using IPC.Web.ViewModels.ApiLog;
-using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
+﻿namespace IPC.Service;
 
-namespace IPC.Web.Services;
+
 
 public class ApiLogService : BaseService
 {

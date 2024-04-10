@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace IPC.Web.Models;
+namespace IPC.Presentation.Web.Models;
 
 public class OracleDbContext : DbContext
 {

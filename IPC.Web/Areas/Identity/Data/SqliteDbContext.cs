@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace IPC.Web.Data;
+namespace IPC.Presentation.Web.Data;
 
 public class SqliteDbContext : IdentityDbContext<IdentityUser>
 {

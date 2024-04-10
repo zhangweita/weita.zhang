@@ -6,7 +6,7 @@ using System;
 
 #nullable disable
 
-namespace IPC.Web.Migrations
+namespace IPC.Presentation.Web.Migrations
 {
     [DbContext(typeof(SqliteDbContext))]
     partial class SqliteDbContextModelSnapshot : ModelSnapshot

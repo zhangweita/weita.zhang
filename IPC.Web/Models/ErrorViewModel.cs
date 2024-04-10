@@ -1,4 +1,4 @@
-namespace IPC.Web.Models
+namespace IPC.Presentation.Web.Models
 {
     public class ErrorViewModel
     {

@@ -1,4 +1,4 @@
-﻿namespace IPC.Web.Common.ClassTypes;
+﻿namespace IPC.Presentation.Web.Common.ClassTypes;
 
 public enum DatabaseType
 {

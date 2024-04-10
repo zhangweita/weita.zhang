@@ -2,7 +2,7 @@ using IPC.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace IPC.Web.Controllers
+namespace IPC.Presentation.Web.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,12 +1,4 @@
-﻿namespace IPC.Web.Services;
-
-/// <summary>
-/// 服务接口
-/// </summary>
-public interface IService
-{
-
-}
+﻿namespace IPC.Service;
 
 /// <summary>
 /// 服务抽象类

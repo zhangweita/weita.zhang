@@ -1,6 +1,4 @@
-﻿using IPC.Web.Models;
-
-namespace IPC.Web.ViewModels.ApiLog;
+﻿namespace IPC.Presentation.Web.ViewModels.ApiLog;
 
 /// <summary>
 /// 接口日志分页信息

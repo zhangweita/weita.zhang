@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace IPC.Web.Common;
+namespace IPC.Presentation.Web.Common;
 
 public static class DesEncryption
 {

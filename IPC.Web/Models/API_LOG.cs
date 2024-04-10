@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IPC.Web.Models;
+namespace IPC.Presentation.Web.Models;
 
 [Table("API_LOG")]
 public class API_LOG

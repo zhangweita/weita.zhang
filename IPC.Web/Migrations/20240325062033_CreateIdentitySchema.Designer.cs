@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IPC.Web.Migrations
+namespace IPC.Presentation.Web.Migrations
 {
     [DbContext(typeof(SqliteDbContext))]
     [Migration("20240325062033_CreateIdentitySchema")]
