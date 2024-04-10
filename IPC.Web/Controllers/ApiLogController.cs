@@ -1,8 +1,8 @@
-﻿using IPC.Presentation.Web.Services;
-using IPC.Web.ViewModels.ApiLog;
+﻿using IPC.Model.ViewModel.ApiLog;
+using IPC.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IPC.Presentation.Web.Controllers;
+namespace IPC.Web.Controllers;
 
 public class ApiLogController : Controller
 {

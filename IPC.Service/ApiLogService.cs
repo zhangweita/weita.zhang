@@ -1,6 +1,8 @@
-﻿namespace IPC.Service;
+﻿using IPC.DataAccess.Oracle;
+using IPC.DataAccess.Oracle.Factory;
+using IPC.Model.ViewModel.ApiLog;
 
-
+namespace IPC.Service;
 
 public class ApiLogService : BaseService
 {
@@ -13,7 +15,7 @@ public class ApiLogService : BaseService
 
     public async Task<ApiLogPaginationInfo> GetLogListAsync(int pageNum, int pageSize)
     {
-        using OracleDbContext db = _dbContextFactory.CreateContext(DatabaseType.OracleTest);
+        using OracleEFDbContext db = _dbContextFactory.CreateContext(DatabaseType.OracleTest);
 
 
         int recordCount = await db.ApiLogs.CountAsync();

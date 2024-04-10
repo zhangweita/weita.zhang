@@ -1,5 +1,5 @@
-using IPC.Web.Common.ClassTypes;
-using IPC.Presentation.Web.Services;
+using IPC.DataAccess.Oracle.Factory;
+using IPC.Service;
 
 
 var builder = WebApplication.CreateBuilder(args);

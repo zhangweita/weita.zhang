@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\IPC.DataAccess.Oracle\IPC.DataAccess.Oracle.csproj" />
-  </ItemGroup>
-
 </Project>
