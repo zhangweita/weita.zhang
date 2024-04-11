@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IPC.DataAccess.Oracle\IPC.DataAccess.Oracle.csproj" />
+    <ProjectReference Include="..\IPC.DataAccess\IPC.DataAccess.csproj" />
     <ProjectReference Include="..\IPC.Model.ViewModel\IPC.Model.ViewModel.csproj" />
   </ItemGroup>
 

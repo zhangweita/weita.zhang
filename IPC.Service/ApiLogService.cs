@@ -1,4 +1,5 @@
-﻿using IPC.DataAccess.Oracle;
+﻿using IPC.DataAccess;
+using IPC.DataAccess.Oracle;
 using IPC.DataAccess.Oracle.Factory;
 using IPC.Model.ViewModel.ApiLog;
 
@@ -6,7 +7,7 @@ namespace IPC.Service;
 
 public class ApiLogService : BaseService
 {
-    private readonly IDbContextFactory _dbContextFactory;
+    private readonly IDAL _dbContextFactory;
 
     public ApiLogService(IDbContextFactory dbContextFactory, ILogger<ApiLogService> logger, IConfiguration cfg) : base(logger, cfg)
     {

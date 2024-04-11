@@ -1,7 +1,7 @@
-﻿using IPC.Common.Utils.Convert;
-using IPC.DataAccess.Oracle.Factory;
+﻿using IPC.DataAccess.Oracle.Factory;
 using IPC.Model.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Linq.Expressions;
 
@@ -10,7 +10,7 @@ namespace IPC.DataAccess;
 public class BaseDAL<T> : IDAL<T>, IAsyncDAL<T> where T : BaseModel
 {
     private DbContext Db { get; init; }
-    public BaseDAL(IDbContextFactory DbFactory)
+    public BaseDAL(IDbContextFactory DbFactory, IConfiguration configuration)
     {
         Db = DbFactory.CreateContext(DatabaseType.OracleTest);
     }
