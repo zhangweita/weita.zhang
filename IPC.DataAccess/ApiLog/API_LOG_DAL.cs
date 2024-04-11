@@ -1,7 +1,4 @@
-﻿using IPC.DataAccess.Oracle.Factory;
-using IPC.Model.Entity;
-using System.Data;
-using System.Linq.Expressions;
+﻿using IPC.Model.Entity;
 
 namespace IPC.DataAccess.ApiLog;
 

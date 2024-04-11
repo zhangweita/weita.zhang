@@ -14,11 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IPC.Common\IPC.Common.csproj" />
     <ProjectReference Include="..\IPC.DataAccess.Oracle\IPC.DataAccess.Oracle.csproj" />
     <ProjectReference Include="..\IPC.Model.ViewModel\IPC.Model.ViewModel.csproj" />
     <ProjectReference Include="..\IPC.Service\IPC.Service.csproj" />

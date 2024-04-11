@@ -1,6 +1,14 @@
-﻿namespace IPC.Model.Entity;
+﻿using System.Net;
 
-public abstract class BaseModel
+namespace IPC.Model.Entity;
+
+public abstract class BaseModel<TId> where TId : struct
 {
-    public int Id { get; set; }
+    public ModelId<TId> Id { get; set; }
+}
+
+public readonly struct ModelId<TId> where TId : struct
+{
+    public ModelId(TId value) => Value = value;
+    public TId Value { get; }
 }

@@ -1,24 +1,21 @@
-﻿using IPC.DataAccess.Oracle;
+﻿using IPC.DataAccess;
+using IPC.DataAccess.Oracle;
 using IPC.DataAccess.Oracle.Factory;
+using IPC.Model.Entity;
 using IPC.Model.ViewModel.ApiLog;
 
-namespace IPC.Service;
+namespace IPC.Service.ApiLog;
 
-public class ApiLogService : BaseService
+public class ApiLogService : BaseService<API_LOG>
 {
-    private readonly IDbContextFactory _dbContextFactory;
-
-    public ApiLogService(IDbContextFactory dbContextFactory, ILogger<ApiLogService> logger, IConfiguration cfg) : base(logger, cfg)
+    public ApiLogService(ILogger<ApiLogService> logger, IConfiguration cfg) : base(logger, cfg)
     {
-        this._dbContextFactory = dbContextFactory;
     }
 
     public async Task<ApiLogPaginationInfo> GetLogListAsync(int pageNum, int pageSize)
     {
-        using OracleEFDbContext db = _dbContextFactory.CreateContext(DatabaseType.OracleTest);
 
-
-        int recordCount = await db.ApiLogs.CountAsync();
+        int recordCount = Dal.;
         var logList = await db.ApiLogs.OrderByDescending(l => l.REQUEST_TIME).Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
         ApiLogPaginationInfo info = new()
         {

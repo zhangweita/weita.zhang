@@ -1,9 +1,11 @@
 ﻿using System.Linq.Expressions;
+using System.Security.Cryptography;
 
 namespace IPC.DataAccess;
 
-public interface IDAL<T>
+public interface IDAL<T, TId>
 {
+    #region 同步
     /// <summary>
     /// 新增实体
     /// </summary>
@@ -21,7 +23,7 @@ public interface IDAL<T>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    int DeleteById(int id);
+    int DeleteById(TId id);
     /// <summary>
     /// 根据查询条件删除实体
     /// </summary>
@@ -45,7 +47,7 @@ public interface IDAL<T>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    T? GetById(int id);
+    T? GetById(TId id);
     /// <summary>
     /// 根据条件查询一条数据
     /// </summary>
@@ -58,10 +60,8 @@ public interface IDAL<T>
     /// <param name="expression"></param>
     /// <returns></returns>
     List<T> GetList(Expression<Func<T, bool>> expression);
-}
-
-public interface IAsyncDAL<T>
-{
+    #endregion
+    #region 异步
     /// <summary>
     /// 新增实体
     /// </summary>
@@ -79,7 +79,7 @@ public interface IAsyncDAL<T>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<int> DeleteAsync(int id);
+    Task<int> DeleteAsync(TId id);
     /// <summary>
     /// 根据查询条件删除实体
     /// </summary>
@@ -103,7 +103,7 @@ public interface IAsyncDAL<T>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<T?> GetByIdAsync(int id);
+    Task<T?> GetByIdAsync(TId id);
     /// <summary>
     /// 根据条件查询一条数据
     /// </summary>
@@ -116,4 +116,5 @@ public interface IAsyncDAL<T>
     /// <param name="expression"></param>
     /// <returns></returns>
     Task<List<T>> GetListAsync(Expression<Func<T, bool>> expression);
+    #endregion
 }

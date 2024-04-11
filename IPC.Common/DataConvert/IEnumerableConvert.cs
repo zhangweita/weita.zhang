@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Reflection;
 
-namespace IPC.Common.Utils.Convert;
+namespace IPC.Common.Utils.DataConvert;
 
 public static class IEnumerableConvertExtension
 {

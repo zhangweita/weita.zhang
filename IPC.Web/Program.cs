@@ -1,5 +1,6 @@
+using IPC.Common.AutoMapper;
 using IPC.DataAccess.Oracle.Factory;
-using IPC.Service;
+using IPC.Service.ApiLog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ builder.Services.AddLogging(logger => logger.AddConsole());
 //var connectionString = builder.Configuration.GetConnectionString("SqliteDbContextConnection") ?? throw new InvalidOperationException("Connection string 'SqliteDbContextConnection' not found.");
 //builder.Services.AddDbContext<SqliteDbContext>(options => options.UseSqlite(connectionString));
 //builder.Services.AddDbContext<EFCoreDbContext>(options => options.UseOracle(connectionString));
+
+builder.Services.AddAutoMapper(typeof(IPCMapperProfile));
 
 builder.Services.AddTransient<IDbContextFactory, DbContextFactory>();
 builder.Services.AddScoped<ApiLogService>();

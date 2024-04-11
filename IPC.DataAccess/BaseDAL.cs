@@ -1,16 +1,16 @@
-﻿using IPC.Common.Utils.Convert;
-using IPC.DataAccess.Oracle.Factory;
+﻿using IPC.DataAccess.Oracle.Factory;
 using IPC.Model.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Linq.Expressions;
 
 namespace IPC.DataAccess;
 
-public class BaseDAL<T> : IDAL<T>, IAsyncDAL<T> where T : BaseModel
+public class BaseDAL<T, TId> : IDAL<T, TId> where T : BaseModel<TId>
 {
     private DbContext Db { get; init; }
-    public BaseDAL(IDbContextFactory DbFactory)
+    public BaseDAL(IDbContextFactory DbFactory, IConfiguration configuration)
     {
         Db = DbFactory.CreateContext(DatabaseType.OracleTest);
     }
@@ -39,7 +39,7 @@ public class BaseDAL<T> : IDAL<T>, IAsyncDAL<T> where T : BaseModel
     #endregion
 
     #region 删
-    public virtual int DeleteById(int id)
+    public virtual int DeleteById(TId id)
     {
 
         T? t = Db.Set<T>().Find(id);
@@ -48,7 +48,7 @@ public class BaseDAL<T> : IDAL<T>, IAsyncDAL<T> where T : BaseModel
         Db.Set<T>().Remove(t);
         return Db.SaveChanges();
     }
-    public virtual async Task<int> DeleteAsync(int id)
+    public virtual async Task<int> DeleteAsync(TId id)
     {
         T? t = await Db.Set<T>().FindAsync(id);
         if (t == null) return 0;
@@ -106,11 +106,11 @@ public class BaseDAL<T> : IDAL<T>, IAsyncDAL<T> where T : BaseModel
     #endregion
 
     #region 查
-    public virtual T? GetById(int id)
+    public virtual T? GetById(TId id)
     {
         return Db.Set<T>().Find(id);
     }
-    public virtual Task<T?> GetByIdAsync(int id)
+    public virtual Task<T?> GetByIdAsync(TId id)
     {
         return Db.Set<T>().FindAsync(id).AsTask();
     }

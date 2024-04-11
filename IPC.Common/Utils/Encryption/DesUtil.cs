@@ -24,7 +24,6 @@ public static class DesUtil
 
         cStream.Write(toEncrypt, 0, toEncrypt.Length);
         cStream.FlushFinalBlock();
-
         return Convert.ToBase64String(mStream.ToArray());
     }
 

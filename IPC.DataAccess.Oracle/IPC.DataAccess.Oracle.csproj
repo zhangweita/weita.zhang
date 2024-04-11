@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IPC.Common.Utils\IPC.Common.Utils.csproj" />
+    <ProjectReference Include="..\IPC.Common.Utils\IPC.Common.csproj" />
     <ProjectReference Include="..\IPC.Model.Entity\IPC.Model.Entity.csproj" />
   </ItemGroup>
 
