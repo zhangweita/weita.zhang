@@ -15,6 +15,7 @@ public class IPCMapperProfile : Profile
         // 清除默认前缀
         ClearPrefixes();
 
+
         CreateMap<ApiLogDTO, API_LOG>()
             .ForMember(dest => dest.EQUIPMENT_CODE, opt => opt.MapFrom(src => src.EquipmentCode))
             .ForMember(dest => dest.REQUEST_TIME, opt => opt.MapFrom(src => src.RequestTime))

@@ -1,6 +1,6 @@
 using IPC.Common.AutoMapper;
 using IPC.DataAccess.Oracle.Factory;
-using IPC.Service.ApiLog;
+using IPC.Service;
 
 
 var builder = WebApplication.CreateBuilder(args);
