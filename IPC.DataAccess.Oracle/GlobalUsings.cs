@@ -1,9 +1,2 @@
-﻿using System;
-using System.Linq;
-
-namespace IPC.DataAccess.Oracle
-{
-    internal class GlobalUsings
-    {
-    }
-}
+﻿global using IPC.Model.Entity;
+global using Microsoft.EntityFrameworkCore;

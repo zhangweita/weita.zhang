@@ -1,6 +1,5 @@
 ﻿using IPC.Model.ViewModel.ApiLog;
 using IPC.Service.ApiLog;
-using Microsoft.AspNetCore.Mvc;
 
 namespace IPC.Web.Controllers;
 

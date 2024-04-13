@@ -1,7 +1,4 @@
-﻿using IPC.Model.Entity;
-using Microsoft.EntityFrameworkCore;
-
-namespace IPC.DataAccess.Oracle;
+﻿namespace IPC.DataAccess.Oracle;
 
 public class OracleEFDbContext : DbContext
 {

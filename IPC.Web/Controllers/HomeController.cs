@@ -1,5 +1,4 @@
 using IPC.Web.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace IPC.Web.Controllers

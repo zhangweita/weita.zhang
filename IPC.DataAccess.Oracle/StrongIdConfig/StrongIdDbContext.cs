@@ -1,6 +1,4 @@
-﻿using IPC.Model.Entity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IPC.DataAccess.Oracle.StrongIdConfig;
 
