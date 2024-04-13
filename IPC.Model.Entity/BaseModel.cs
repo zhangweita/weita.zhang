@@ -1,14 +1,31 @@
-﻿using System.Net;
+﻿namespace IPC.Model.Entity;
 
-namespace IPC.Model.Entity;
-
-public abstract class BaseModel<TId> where TId : struct
+public abstract class BaseModel
 {
-    public ModelId<TId> Id { get; set; }
+    //public required BaseId<TId> Id { get; set; }
 }
 
-public readonly struct ModelId<TId> where TId : struct
+/// <summary>
+/// 模型类ID定义
+/// </summary>
+/// <typeparam name="TId"></typeparam>
+/// <param name="value"></param>
+public record IntegerId : BaseId<int>
 {
-    public ModelId(TId value) => Value = value;
-    public TId Value { get; }
+    public IntegerId(int value) : base(value) { }
+}
+
+/// <summary>
+/// 模型类ID定义
+/// </summary>
+/// <typeparam name="TId"></typeparam>
+/// <param name="value"></param>
+public record GuidId : BaseId<Guid>
+{
+    public GuidId(Guid value) : base(value) { }
+}
+
+public record BaseId<T>(T Value)
+{
+    public T Value { get; } = Value;//主构造函数初始化
 }

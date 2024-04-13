@@ -1,4 +1,6 @@
-﻿namespace IPC.Model.ViewModel.ApiLog;
+﻿using IPC.Model.Entity;
+
+namespace IPC.Model.ViewModel.ApiLog;
 
 /// <summary>
 /// 接口日志分页信息

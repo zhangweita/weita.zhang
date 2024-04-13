@@ -15,14 +15,15 @@ public class ApiLogService : BaseService<API_LOG>
     public async Task<ApiLogPaginationInfo> GetLogListAsync(int pageNum, int pageSize)
     {
 
-        int recordCount = Dal.;
-        var logList = await db.ApiLogs.OrderByDescending(l => l.REQUEST_TIME).Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
-        ApiLogPaginationInfo info = new()
-        {
-            RecordCount = recordCount,
-            PageCount = (int)Math.Ceiling(recordCount * 1.0 / pageSize),
-            QueryLogList = logList
-        };
-        return info;
+        //int recordCount = Dal.GetList(l => 1 == 1).Count();
+        //var logList = await db.ApiLogs.OrderByDescending(l => l.REQUEST_TIME).Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
+        //ApiLogPaginationInfo info = new()
+        //{
+        //    RecordCount = recordCount,
+        //    PageCount = (int)Math.Ceiling(recordCount * 1.0 / pageSize),
+        //    QueryLogList = logList
+        //};
+        //return info;
+        return null;
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Linq.Expressions;
-using System.Security.Cryptography;
 
 namespace IPC.DataAccess;
 
-public interface IDAL<T, TId>
+public interface IDAL<T>
 {
     #region 同步
     /// <summary>
@@ -23,7 +22,7 @@ public interface IDAL<T, TId>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    int DeleteById(TId id);
+    int DeleteById(int id);
     /// <summary>
     /// 根据查询条件删除实体
     /// </summary>
@@ -47,7 +46,7 @@ public interface IDAL<T, TId>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    T? GetById(TId id);
+    T? GetById(int id);
     /// <summary>
     /// 根据条件查询一条数据
     /// </summary>
@@ -79,7 +78,7 @@ public interface IDAL<T, TId>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<int> DeleteAsync(TId id);
+    Task<int> DeleteAsync(int id);
     /// <summary>
     /// 根据查询条件删除实体
     /// </summary>
@@ -103,7 +102,7 @@ public interface IDAL<T, TId>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<T?> GetByIdAsync(TId id);
+    Task<T?> GetByIdAsync(int id);
     /// <summary>
     /// 根据条件查询一条数据
     /// </summary>
