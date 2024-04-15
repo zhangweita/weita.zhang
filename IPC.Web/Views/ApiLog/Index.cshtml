@@ -1,4 +1,5 @@
 ﻿@using System.Text.RegularExpressions
+@using IPC.Model.ViewModel.ApiLog
 @{
     // ViewData["Title"] = "ApiLog";
     ViewBag.PageSize = 50;
@@ -6,7 +7,7 @@
     var lineList = (ViewBag.LineList as IEnumerable<string>).Select(x => new SelectListItem { Text = x, Value = x });
     var equipmentList = ViewBag.EquipmentList as List<SelectListItem>;
 }
-@model List<API_LOG>
+@model ApiLogPaginationInfo
 @* <h1>@ViewData["Title"]</h1> *@
 
 <div class="row">
@@ -53,14 +54,14 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Model?.Count(); i++)
+                @for (int i = 0; i < Model?.QueryLogList.Count(); i++)
                 {
                     <tr>
                         <th scope="row">@(i + 1)</th>
-                        <td>@Model[i].EQUIPMENT_CODE</td>
-                        <td>@Model[i].REQUEST_TIME</td>
-                        <td>@Model[i].ACTION_NAME</td>
-                        @if (Model[i].HTTP_RESULT == null || Regex.Match(Model[i].HTTP_RESULT, @"^.*?Code""\s*:\s*1\s*,.*?$").Success)
+                        <td>@Model.QueryLogList[i].EQUIPMENT_CODE</td>
+                        <td>@Model.QueryLogList[i].REQUEST_TIME</td>
+                        <td>@Model.QueryLogList[i].ACTION_NAME</td>
+                        @if (Model.QueryLogList[i].HTTP_RESULT == null || Regex.Match(Model.QueryLogList[i].HTTP_RESULT, @"^.*?Code""\s*:\s*1\s*,.*?$").Success)
                         {
                             <td class="bg-success text-light">成功</td>
                         }
@@ -68,9 +69,9 @@
                         {
                             <td class="bg-danger text-light">失败</td>
                         }
-                        <td>@Model[i].MES_DURATION</td>
-                        <td>@Model[i].EXECUTION_DURATION</td>
-                        <td>@Model[i].SERVER_IP</td>
+                        <td>@Model.QueryLogList[i].MES_DURATION</td>
+                        <td>@Model.QueryLogList[i].EXECUTION_DURATION</td>
+                        <td>@Model.QueryLogList[i].SERVER_IP</td>
                         <td><button type="button" class="btn btn-primary" data-bs-target="#logDetailModalToggle" data-bs-toggle="modal">详情</button></td>
                     </tr>
                 }

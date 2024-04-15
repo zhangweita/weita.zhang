@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace ApiDemo.Controllers;
@@ -22,8 +21,6 @@ public class TestController : ControllerBase
     public ActionResult<Student[]> GetAll(string schoolName, [FromRoute(Name = "classNo")] int classNum)
     {
         return NotFound();
-
-
     }
 
     [HttpPost]
@@ -32,7 +29,7 @@ public class TestController : ControllerBase
         if (loginRequest.UserName == "admin" && loginRequest.Password == "123456")
         {
             var processes = Process.GetProcesses().Select(p => new ProcessInfo(
-            p.Id, p.ProcessName, p.WorkingSet64)).ToArray();
+                                                            p.Id, p.ProcessName, p.WorkingSet64)).ToArray();
             return new LoginResult(true, processes);
         }
         else
@@ -45,7 +42,6 @@ public class TestController : ControllerBase
 public record Person(int Id, string Name, int Age);
 public record Student(int Id, string Name, int Age, string schoolName);
 public record ErrorInfo(int Code, string? Message);
-
 public record LoginResult(bool IsOK, ProcessInfo[]? Processes);
 public record LoginRequest(string UserName, string Password);
 public record ProcessInfo(int Id, string ProcessName, long WorkingSet6);

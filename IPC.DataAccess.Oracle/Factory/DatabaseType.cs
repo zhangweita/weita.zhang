@@ -2,7 +2,7 @@
 
 public enum DatabaseType
 {
-    LocalSqliteConfig,
-    OracleFormal,
+    OracleRead,
+    OracleWrite,
     OracleTest
 }

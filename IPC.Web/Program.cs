@@ -1,9 +1,29 @@
 using IPC.Common.AutoMapper;
+using IPC.Common.Configuration;
 using IPC.DataAccess.Oracle.Factory;
-using IPC.Service;
+using IPC.Service.ApiLog;
+using Microsoft.Data.SqlClient;
+using StackExchange.Redis;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+string connStr = builder.Configuration.GetConnectionString("configServer");
+builder.Configuration.AddDbConfiguration(new DBConfigOptions
+{
+    CreateDbConnection = () => new SqlConnection(connStr),
+    TableName = "IPC_Configuration",
+    ReloadOnChange = true,
+    ReloadInterval = TimeSpan.FromSeconds(5)
+});
+
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+//builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+//{
+//    string connStr = builder.Configuration.GetValue<string>("Redis:ConnStr");
+//    return ConnectionMultiplexer.Connect(connStr);
+//});
+
 
 builder.Services.AddLogging(logger => logger.AddConsole());
 

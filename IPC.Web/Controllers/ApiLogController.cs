@@ -1,5 +1,8 @@
-﻿using IPC.Model.ViewModel.ApiLog;
+﻿using IPC.Common.Configuration;
+using IPC.Model.ViewModel.ApiLog;
 using IPC.Service.ApiLog;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace IPC.Web.Controllers;
 
@@ -7,6 +10,10 @@ public class ApiLogController : Controller
 {
     private readonly ILogger<ApiLogController> _logger;
     private readonly ApiLogService _apiLogService;
+
+
+
+
     public ApiLogController(ILogger<ApiLogController> _logger, ApiLogService _apiLogService)
     {
         this._logger = _logger;
@@ -35,6 +42,6 @@ public class ApiLogController : Controller
         ViewBag.RecordCount = pageInfo.RecordCount;
         ViewBag.PageCount = pageInfo.PageCount;
 
-        return View("Index", pageInfo.QueryLogList);
+        return View("Index", pageInfo);
     }
 }

@@ -1,4 +1,7 @@
+using IPC.Common.Configuration;
 using IPC.Web.Models;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System.Diagnostics;
 
 namespace IPC.Web.Controllers
@@ -6,10 +9,13 @@ namespace IPC.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IOptionsSnapshot<SmtpOptions> smtpOptions;
+        //private readonly IConnectionMultiplexer connMultiplexer;
+        public HomeController(ILogger<HomeController> logger,
+        IOptionsSnapshot<SmtpOptions> smtpOptions)
         {
             _logger = logger;
+            this.smtpOptions = smtpOptions;
         }
 
         public IActionResult Index()
@@ -17,9 +23,10 @@ namespace IPC.Web.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public string Privacy()
         {
-            return View();
+            SmtpOptions opt = smtpOptions.Value;
+            return $"Smtp:{opt} timeSpan:{DateTime.Now}";
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

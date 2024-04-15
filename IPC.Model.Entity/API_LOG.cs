@@ -3,7 +3,7 @@
 namespace IPC.Model.Entity;
 
 [Table("API_LOG")]
-public class API_LOG : BaseModel
+public class API_LOG
 {
     public required int ID { get; set; }
     /// <summary>
