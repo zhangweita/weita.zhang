@@ -28,3 +28,10 @@ public class EQUIPMENT
     public string? WORKCENTER { get; set; }
 }
 
+public class EquipmentConfig : IEntityTypeConfiguration<EQUIPMENT>
+{
+    public void Configure(EntityTypeBuilder<EQUIPMENT> builder)
+    {
+        builder.HasNoKey();
+    }
+}

@@ -1,21 +1,13 @@
-﻿namespace IPC.DataAccess.Oracle;
+﻿using IPC.Model.Entity;
 
-public class OracleEFDbContext : DbContext
+namespace IPC.DataAccess.Oracle;
+
+public class OracleEFDbContext(DbContextOptions options) : DbContext(options)
 {
-    private string connectionString;
-    public OracleEFDbContext(string connectionString)
-    {
-        this.connectionString = connectionString ?? throw new Exception("数据库连接不能为空！");
-    }
-
     public DbSet<API_LOG> ApiLogs { get; set; }
     public DbSet<EQUIPMENT> Equipments { get; set; }
+    public DbSet<ACTIONNAME> ActionNames { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseOracle(connectionString);
-        //base.OnConfiguring(optionsBuilder);
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,3 +15,7 @@ public class OracleEFDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
     }
 }
+
+public class FormalReadDbContext(DbContextOptions<FormalReadDbContext> options) : OracleEFDbContext(options) { }
+public class FormalWriteDbContext(DbContextOptions<FormalWriteDbContext> options) : OracleEFDbContext(options) { }
+public class TestRWDbContext(DbContextOptions<TestRWDbContext> options) : OracleEFDbContext(options) { }

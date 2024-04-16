@@ -2,20 +2,12 @@ using IPC.Common.AutoMapper;
 using IPC.Common.Configuration;
 using IPC.DataAccess.Oracle.Factory;
 using IPC.Service.ApiLog;
-using Microsoft.Data.SqlClient;
-using StackExchange.Redis;
+using IPC.Web.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connStr = builder.Configuration.GetConnectionString("configServer");
-builder.Configuration.AddDbConfiguration(new DBConfigOptions
-{
-    CreateDbConnection = () => new SqlConnection(connStr),
-    TableName = "IPC_Configuration",
-    ReloadOnChange = true,
-    ReloadInterval = TimeSpan.FromSeconds(5)
-});
+builder.Services.LoadConfiguration(builder.Configuration);
 
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 //builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
@@ -33,7 +25,7 @@ builder.Services.AddLogging(logger => logger.AddConsole());
 
 builder.Services.AddAutoMapper(typeof(IPCMapperProfile));
 
-builder.Services.AddTransient<IDbContextFactory, DbContextFactory>();
+//builder.Services.AddTransient<IDbContextFactory, DbContextFactory>();
 builder.Services.AddScoped<ApiLogService>();
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SqliteDbContext>();
