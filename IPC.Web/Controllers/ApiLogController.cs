@@ -1,8 +1,5 @@
-﻿using IPC.Common.Configuration;
-using IPC.Model.ViewModel.ApiLog;
+﻿using IPC.Model.ViewModel.ApiLog;
 using IPC.Service.ApiLog;
-using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 
 namespace IPC.Web.Controllers;
 

@@ -24,6 +24,6 @@ public class ApiLogService : BaseService<API_LOG>
         //    QueryLogList = logList
         //};
         //return info;
-        return null;
+        return await Task.FromResult(new ApiLogPaginationInfo());
     }
 }

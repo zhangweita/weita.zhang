@@ -1,6 +1,5 @@
 using IPC.Common.AutoMapper;
 using IPC.Common.Configuration;
-using IPC.DataAccess.Oracle.Factory;
 using IPC.Service.ApiLog;
 using IPC.Web.Extensions;
 
@@ -19,22 +18,21 @@ builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp")
 
 builder.Services.AddLogging(logger => logger.AddConsole());
 
-//var connectionString = builder.Configuration.GetConnectionString("SqliteDbContextConnection") ?? throw new InvalidOperationException("Connection string 'SqliteDbContextConnection' not found.");
-//builder.Services.AddDbContext<SqliteDbContext>(options => options.UseSqlite(connectionString));
-//builder.Services.AddDbContext<EFCoreDbContext>(options => options.UseOracle(connectionString));
+builder.Services.AddMemoryCache();
 
 builder.Services.AddAutoMapper(typeof(IPCMapperProfile));
 
-//builder.Services.AddTransient<IDbContextFactory, DbContextFactory>();
 builder.Services.AddScoped<ApiLogService>();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SqliteDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+app.UseCors();
+//app.UseResponseCaching();   // 启用响应缓存中间件
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

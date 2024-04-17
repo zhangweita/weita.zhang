@@ -1,12 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BooksEFCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace ApiDemo.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class TestController : ControllerBase
+public class TestController(IMemoryCache memoryCache, MyDbContext dbContext, ILogger<TestController> logger) : ControllerBase
 {
+    private readonly IMemoryCache memoryCache = memoryCache;
+    private readonly ILogger<TestController> logger = logger;
+    private readonly MyDbContext dbContext = dbContext;
+
+    [HttpGet]
+    public async Task<Book[]> GetBooks()
+    {
+        logger.LogInformation("开始执行GetBooks");
+        var items = await memoryCache.GetOrCreateAsync("AllBooks", async e =>
+          {
+              logger.LogInformation("从数据库中读取数据");
+              return await dbContext.Books.ToArrayAsync();
+          });
+
+        logger.LogInformation("把数据返回给调用者");
+        return items!;
+    }
+
+
     [HttpGet]
     public ActionResult<Person> GetPerson(int id) => id switch
     {
@@ -37,6 +60,10 @@ public class TestController : ControllerBase
             return new LoginResult(false, null);
         }
     }
+
+    [HttpGet]
+    [ResponseCache(Duration = 60)]
+    public DateTime Now() => DateTime.Now;
 }
 
 public record Person(int Id, string Name, int Age);

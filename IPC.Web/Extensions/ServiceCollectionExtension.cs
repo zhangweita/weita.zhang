@@ -4,6 +4,7 @@ using IPC.DataAccess.Sqlite.ConfigModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Reflection;
 
 namespace IPC.Web.Extensions;
 
@@ -55,6 +56,21 @@ public static class ServiceCollectionExtension
             options.UseOracle(connectionString);
         });
 
+        return services;
+    }
+
+    public static IServiceCollection AddAllDbContexts(this IServiceCollection services, Action<DbContextOptionsBuilder> builder, IEnumerable<Assembly> assemblies)
+    {
+        Type[] types = [typeof(IServiceCollection), typeof(Action<DbContextOptionsBuilder>), typeof(ServiceLifetime), typeof(ServiceLifetime)];
+        var methodAddDbContext = typeof(EntityFrameworkServiceCollectionExtensions).GetMethod("AddDbContext", 1, types);
+        foreach (var asmToLoad in assemblies)
+        {
+            foreach (var dbCtxType in asmToLoad.GetTypes().Where(t => !t.IsAbstract && typeof(DbContext).IsAssignableFrom(t)))
+            {
+                var methodGenericAddDbContext = methodAddDbContext.MakeGenericMethod(dbCtxType);
+                methodGenericAddDbContext.Invoke(null, [services, builder, ServiceLifetime.Scoped, ServiceLifetime.Scoped]);
+            }
+        }
         return services;
     }
 }
