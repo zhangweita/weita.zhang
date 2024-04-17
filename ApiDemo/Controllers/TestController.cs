@@ -1,5 +1,7 @@
-﻿using BooksEFCore;
+﻿using ApiDemo.Cache;
+using BooksEFCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -11,20 +13,19 @@ namespace ApiDemo.Controllers;
 [Route("api/[controller]/[action]")]
 public class TestController(IMemoryCache memoryCache, MyDbContext dbContext, ILogger<TestController> logger) : ControllerBase
 {
-    private readonly IMemoryCache memoryCache = memoryCache;
     private readonly ILogger<TestController> logger = logger;
     private readonly MyDbContext dbContext = dbContext;
+    private readonly MemoryCacheHelepr cacheHelper = new(memoryCache);
 
     [HttpGet]
     public async Task<Book[]> GetBooks()
     {
         logger.LogInformation("开始执行GetBooks");
-        var items = await memoryCache.GetOrCreateAsync("AllBooks", async e =>
-          {
-              e.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10);
-              logger.LogInformation("从数据库中读取数据");
-              return await dbContext.Books.ToArrayAsync();
-          });
+        var items = await cacheHelper.GetOrCreateAsync("AllBooks", async e =>
+        {
+            logger.LogInformation("从数据库中读取数据");
+            return await dbContext.Books.ToArrayAsync();
+        });
 
         logger.LogInformation("把数据返回给调用者");
         return items!;
