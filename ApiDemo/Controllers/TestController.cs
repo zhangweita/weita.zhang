@@ -21,6 +21,7 @@ public class TestController(IMemoryCache memoryCache, MyDbContext dbContext, ILo
         logger.LogInformation("开始执行GetBooks");
         var items = await memoryCache.GetOrCreateAsync("AllBooks", async e =>
           {
+              e.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10);
               logger.LogInformation("从数据库中读取数据");
               return await dbContext.Books.ToArrayAsync();
           });
