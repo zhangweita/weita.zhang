@@ -44,6 +44,14 @@ builder.Services.Configure<FormOptions>(x =>
 });
 
 
+builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "ipc_";
+});
+
+
 var app = builder.Build();
 
 
@@ -52,7 +60,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.DisplayRequestDuration();
+        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.Full);
+        options.EnableTryItOutByDefault();
+    });
 }
 
 app.UseRouting();

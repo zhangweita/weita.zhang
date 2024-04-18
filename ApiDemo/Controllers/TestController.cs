@@ -3,6 +3,7 @@ using BooksEFCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -11,61 +12,72 @@ namespace ApiDemo.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class TestController(IMemoryCache memoryCache, MyDbContext dbContext, ILogger<TestController> logger) : ControllerBase
+public class TestController(IMemoryCache memoryCache, IDistributedCache distributedCache, MyDbContext dbContext, ILogger<TestController> logger) : ControllerBase
 {
     private readonly ILogger<TestController> logger = logger;
     private readonly MyDbContext dbContext = dbContext;
-    private readonly MemoryCacheHelepr cacheHelper = new(memoryCache);
+    private readonly MemoryCacheHelper cacheHelper = new(memoryCache);
+    private readonly IDistributedCache distributedCache = distributedCache;
+
+    //[HttpGet]
+    //public async Task<Book[]> GetBooks()
+    //{
+    //    logger.LogInformation("开始执行GetBooks");
+    //    var items = await cacheHelper.GetOrCreateAsync("AllBooks", async e =>
+    //    {
+    //        logger.LogInformation("从数据库中读取数据");
+    //        return await dbContext.Books.ToArrayAsync();
+    //    });
+
+    //    logger.LogInformation("把数据返回给调用者");
+    //    return items!;
+    //}
+
+
+    //[HttpGet]
+    //public ActionResult<Person> GetPerson(int id) => id switch
+    //{
+    //    <= 0 => BadRequest("id必须是正数"),
+    //    1 => new Person(1, "洪洪洪", 18),
+    //    2 => new Person(2, "刁刁刁", 18),
+    //    3 => new Person(2, "旺旺旺", 18),
+    //    _ => NotFound(new ErrorInfo(2, "人员不存在"))
+    //};
+
+    //[HttpGet("/school/{schoolName}/class/{classNo}")]
+    //public ActionResult<Student[]> GetAll(string schoolName, [FromRoute(Name = "classNo")] int classNum)
+    //{
+    //    return NotFound();
+    //}
+
+    //[HttpPost]
+    //public ActionResult<LoginResult> Login(LoginRequest loginRequest)
+    //{
+    //    if (loginRequest.UserName == "admin" && loginRequest.Password == "123456")
+    //    {
+    //        var processes = Process.GetProcesses().Select(p => new ProcessInfo(
+    //                                                        p.Id, p.ProcessName, p.WorkingSet64)).ToArray();
+    //        return new LoginResult(true, processes);
+    //    }
+    //    else
+    //    {
+    //        return new LoginResult(false, null);
+    //    }
+    //}
 
     [HttpGet]
-    public async Task<Book[]> GetBooks()
+    public string Now()
     {
-        logger.LogInformation("开始执行GetBooks");
-        var items = await cacheHelper.GetOrCreateAsync("AllBooks", async e =>
+        string? s = distributedCache.GetString("current_time");
+        if (s == null)
         {
-            logger.LogInformation("从数据库中读取数据");
-            return await dbContext.Books.ToArrayAsync();
-        });
+            s = DateTime.Now.ToString();
+            var opt = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5) };
 
-        logger.LogInformation("把数据返回给调用者");
-        return items!;
-    }
-
-
-    [HttpGet]
-    public ActionResult<Person> GetPerson(int id) => id switch
-    {
-        <= 0 => BadRequest("id必须是正数"),
-        1 => new Person(1, "洪洪洪", 18),
-        2 => new Person(2, "刁刁刁", 18),
-        3 => new Person(2, "旺旺旺", 18),
-        _ => NotFound(new ErrorInfo(2, "人员不存在"))
-    };
-
-    [HttpGet("/school/{schoolName}/class/{classNo}")]
-    public ActionResult<Student[]> GetAll(string schoolName, [FromRoute(Name = "classNo")] int classNum)
-    {
-        return NotFound();
-    }
-
-    [HttpPost]
-    public ActionResult<LoginResult> Login(LoginRequest loginRequest)
-    {
-        if (loginRequest.UserName == "admin" && loginRequest.Password == "123456")
-        {
-            var processes = Process.GetProcesses().Select(p => new ProcessInfo(
-                                                            p.Id, p.ProcessName, p.WorkingSet64)).ToArray();
-            return new LoginResult(true, processes);
+            distributedCache.SetString("current_time", s, opt);
         }
-        else
-        {
-            return new LoginResult(false, null);
-        }
+        return s;
     }
-
-    [HttpGet]
-    [ResponseCache(Duration = 60)]
-    public DateTime Now() => DateTime.Now;
 }
 
 public record Person(int Id, string Name, int Age);

@@ -18,7 +18,12 @@ builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp")
 
 builder.Services.AddLogging(logger => logger.AddConsole());
 
-builder.Services.AddMemoryCache();
+//builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration= "localhost:6379";
+    options.InstanceName = "ipc_";
+});
 
 builder.Services.AddAutoMapper(typeof(IPCMapperProfile));
 

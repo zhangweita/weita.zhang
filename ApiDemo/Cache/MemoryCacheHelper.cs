@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace ApiDemo.Cache;
 
-public class MemoryCacheHelepr(IMemoryCache memoryCache) : IMemoryCacheHelepr
+public class MemoryCacheHelper(IMemoryCache memoryCache) : IMemoryCacheHelepr
 {
     private readonly IMemoryCache memoryCache = memoryCache;
 
