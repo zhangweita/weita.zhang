@@ -1,5 +1,7 @@
+using ApiDemo.Filters;
 using BooksEFCore;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -43,13 +45,20 @@ builder.Services.Configure<FormOptions>(x =>
     x.MultipartHeadersCountLimit = int.MaxValue;
 });
 
-
-builder.Services.AddMemoryCache();
+builder.Services.Configure<MvcOptions>(options =>
+{
+    options.Filters.Add<MyExceptionFilter>();   // 配置全局自定义异常拦截器
+    options.Filters.Add<MyActionFilter1>();   // 配置全局操作拦截器
+    options.Filters.Add<MyActionFilter2>();   // 配置全局操作拦截器
+    options.Filters.Add<TransactionScopeFilter>();   // 配置启用事务的操作拦截器
+    options.Filters.Add<RateLimitFilter>();   // 配置ip访问限流操作拦截器
+});
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = "localhost:6379";
     options.InstanceName = "ipc_";
 });
+builder.Services.AddMemoryCache();
 
 
 var app = builder.Build();
