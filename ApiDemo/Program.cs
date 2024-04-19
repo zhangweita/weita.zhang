@@ -1,6 +1,7 @@
 using ApiDemo.Filters;
-using BooksEFCore;
+using ApiDemo.Models;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,35 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<MyDbContext>(options =>
+builder.Services.AddDbContext<IdDbContext>(options =>
 {
     string connStr = builder.Configuration.GetConnectionString("Default")!;
     options.UseSqlServer(connStr);
 });
+builder.Services.AddDataProtection();
+builder.Services.AddIdentityCore<User>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+
+    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);  // µÇÂ½Ê§°ÜËø¶¨Ê±¼ä
+    options.Lockout.MaxFailedAccessAttempts = 5;    // µÇÂ¼ÔÊÐíÊ§°Ü´ÎÊý
+});
+IdentityBuilder identityBuilder = new(typeof(User), typeof(Role), builder.Services);
+identityBuilder.AddEntityFrameworkStores<IdDbContext>()
+    .AddDefaultTokenProviders()
+    .AddRoleManager<RoleManager<Role>>()
+    .AddUserManager<UserManager<User>>();
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -62,7 +87,6 @@ builder.Services.AddMemoryCache();
 
 
 var app = builder.Build();
-
 
 
 // Configure the HTTP request pipeline.

@@ -5,6 +5,9 @@ using System.Transactions;
 
 namespace ApiDemo.Filters;
 
+/// <summary>
+/// 非事务方法标识
+/// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public class NotTransactionalAttribute : Attribute
 {
