@@ -1,9 +1,11 @@
 ﻿using ApiDemo.Cache;
+using ApiDemo.Common;
 using ApiDemo.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -13,14 +15,16 @@ namespace ApiDemo.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class TestController(ILogger<TestController> logger, RoleManager<Role> roleManager, UserManager<User> userManager) : ControllerBase
+public class TestController(ILogger<TestController> logger, RoleManager<Role> roleManager, UserManager<User> userManager,
+IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
 {
     private readonly ILogger<TestController> logger = logger;
     private readonly RoleManager<Role> roleManager = roleManager;
     private readonly UserManager<User> userManager = userManager;
+    private readonly IOptionsSnapshot<JWTOptions> jwtOptions = jwtOptions;
 
     [HttpPost]
-    public async Task<IActionResult> Login(LoginRequest req)
+    public async Task<IActionResult> Login2(LoginRequest req)
     {
         string userName = req.UserName;
         string password = req.Password;
@@ -35,16 +39,40 @@ public class TestController(ILogger<TestController> logger, RoleManager<Role> ro
         }
 
         var success = await userManager.CheckPasswordAsync(user, password);
-        if (success)
+        if (!success)
         {
-            return Ok("Success");
-
-        }
-        else
-        {
-            var r = await userManager.AccessFailedAsync(user);
+            await userManager.AccessFailedAsync(user);
             return Unauthorized("Login Failed");
         }
+
+        user.JWTVersion++;
+        await userManager.UpdateAsync(user);
+        List<Claim> claims =
+            [
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.UserName!),
+                new(ClaimTypes.Version, user.JWTVersion.ToString()),
+            ];
+        var roles = await userManager.GetRolesAsync(user);
+        foreach (var role in roles)
+        {
+            claims.Add(new(ClaimTypes.Role, role));
+        }
+
+        return Ok(BuildToken(claims, jwtOptions.Value));
+    }
+
+    private static string BuildToken(List<Claim> claims, JWTOptions jwtOptions)
+    {
+        DateTime expires = DateTime.Now.AddSeconds(jwtOptions.ExpireSeconds);
+
+        byte[] secBytes = Encoding.UTF8.GetBytes(jwtOptions.SigningKey!);
+        SymmetricSecurityKey securityKey = new(secBytes);
+        SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+        JwtSecurityToken token = new(claims: claims, expires: expires, signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     [HttpPost]
@@ -109,75 +137,76 @@ public class TestController(ILogger<TestController> logger, RoleManager<Role> ro
 
     const string key = "[eQf4jA&}syCoMlI-fF0]{!fA@!d!l";
 
-    [HttpPost]
-    public string CreateJwtToken(UserInfo userInfo)
-    {
-        List<Claim> claims =
-        [
-            new(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Name, userInfo.Name),
-            new("Passport",userInfo.Passport),
-        ];
+    //[HttpPost]
+    //public string CreateJwtToken(UserInfo userInfo)
+    //{
+    //    List<Claim> claims =
+    //    [
+    //        new(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+    //        new(ClaimTypes.Name, userInfo.Name),
+    //        new("Passport",userInfo.Passport),
+    //    ];
 
-        userInfo.Roles.ToList().ForEach(x => claims.Add(new(ClaimTypes.Role, x)));
+    //    userInfo.Roles.ToList().ForEach(x => claims.Add(new(ClaimTypes.Role, x)));
 
-        DateTime expires = DateTime.Now.AddDays(1);
+    //    DateTime expires = DateTime.Now.AddDays(1);
 
-        byte[] secBytes = Encoding.UTF8.GetBytes(key);
-        SymmetricSecurityKey securityKey = new(secBytes);
-        SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
+    //    byte[] secBytes = Encoding.UTF8.GetBytes(key);
+    //    SymmetricSecurityKey securityKey = new(secBytes);
+    //    SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-        JwtSecurityToken token = new(claims: claims, expires: expires, signingCredentials: credentials);
+    //    JwtSecurityToken token = new(claims: claims, expires: expires, signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
+    //    return new JwtSecurityTokenHandler().WriteToken(token);
+    //}
 
-    [HttpPost]
-    public string ValidateJwtToken(string jwt)
-    {
-        JwtSecurityTokenHandler tokenHandler = new();
-        TokenValidationParameters validationParameters = new();
-        validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-        validationParameters.ValidateIssuer = false;
-        validationParameters.ValidateAudience = false;
-
-
-        ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(jwt, validationParameters, out SecurityToken token);
-
+    //[HttpPost]
+    //public string ValidateJwtToken(string jwt)
+    //{
+    //    JwtSecurityTokenHandler tokenHandler = new();
+    //    TokenValidationParameters validationParameters = new()
+    //    {
+    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+    //        ValidateIssuer = false,
+    //        ValidateAudience = false
+    //    };
 
 
-    }
+    //    ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(jwt, validationParameters, out SecurityToken token);
+
+    //    return string.Join(" ", claimsPrincipal.Claims.Select(x => $"{x.Type}={x.Value}"));
+    //}
 
 
-    [HttpPost]
-    public string GetDecodeJwtString(string jwt)
-    {
-        string[] segments = jwt.Split('.');
+    //[HttpPost]
+    //public string GetDecodeJwtString(string jwt)
+    //{
+    //    string[] segments = jwt.Split('.');
 
-        StringBuilder sb = new();
-        sb.AppendLine("Jwt Header:");
-        sb.AppendLine(JwtDecode(segments[0]));
-        sb.AppendLine("Jwt Payload:");
-        sb.AppendLine(JwtDecode(segments[1]));
-        sb.AppendLine("Jwt Signatue:");
-        sb.AppendLine(JwtDecode(segments[2]));
+    //    StringBuilder sb = new();
+    //    sb.AppendLine("Jwt Header:");
+    //    sb.AppendLine(JwtDecode(segments[0]));
+    //    sb.AppendLine("Jwt Payload:");
+    //    sb.AppendLine(JwtDecode(segments[1]));
+    //    sb.AppendLine("Jwt Signatue:");
+    //    sb.AppendLine(JwtDecode(segments[2]));
 
-        return sb.ToString();
-    }
+    //    return sb.ToString();
+    //}
 
-    private string JwtDecode(string s)
-    {
-        s = s.Replace('-', '+').Replace('_', '/');
-        s += (s.Length % 4) switch
-        {
-            2 => "==",
-            3 => "=",
-            _ => default
-        };
+    //private string JwtDecode(string s)
+    //{
+    //    s = s.Replace('-', '+').Replace('_', '/');
+    //    s += (s.Length % 4) switch
+    //    {
+    //        2 => "==",
+    //        3 => "=",
+    //        _ => default
+    //    };
 
-        var bytes = Convert.FromBase64String(s);
-        return Encoding.UTF8.GetString(bytes);
-    }
+    //    var bytes = Convert.FromBase64String(s);
+    //    return Encoding.UTF8.GetString(bytes);
+    //}
 }
 public record UserInfo(string Id, string Name, string[] Roles, string Passport);
 

@@ -1,9 +1,14 @@
+using ApiDemo.Common;
 using ApiDemo.Filters;
 using ApiDemo.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,12 +41,48 @@ identityBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<User>>();
 
+builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtOpt = builder.Configuration.GetSection("JWT").Get<JWTOptions>();
+        byte[] keyBytes = Encoding.UTF8.GetBytes(jwtOpt!.SigningKey!);
+
+        SymmetricSecurityKey secKey = new(keyBytes);
+
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = secKey
+        };
+
+    });
 
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    OpenApiSecurityScheme scheme = new()
+    {
+        Description = "Authorization header. \r\nExample: 'Bearer 12345abcdef'",
+        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Authorization" },
+        Scheme = "oauth2",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    };
+
+    options.AddSecurityDefinition("Authorization", scheme);
+    OpenApiSecurityRequirement requirement = new();
+    requirement[scheme] = new List<string>();
+    options.AddSecurityRequirement(requirement);
+});
 
 // 配置跨域处理，允许所有来源
 string[] urls = ["http://localhost:5173"];
@@ -77,6 +118,7 @@ builder.Services.Configure<MvcOptions>(options =>
     options.Filters.Add<MyActionFilter2>();   // 配置全局操作拦截器
     options.Filters.Add<TransactionScopeFilter>();   // 配置启用事务的操作拦截器
     options.Filters.Add<RateLimitFilter>();   // 配置ip访问限流操作拦截器
+    options.Filters.Add<JWTValidationFilter>();
 });
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -85,9 +127,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 builder.Services.AddMemoryCache();
 
-
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -96,13 +136,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.DisplayRequestDuration();
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.Full);
+        //options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.Full);
         options.EnableTryItOutByDefault();
     });
 }
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
