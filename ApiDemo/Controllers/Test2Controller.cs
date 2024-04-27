@@ -1,5 +1,6 @@
 ﻿using ApiDemo.Common;
 using ApiDemo.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,5 @@ public class Test2Controller(ILogger<Test2Controller> logger, UserManager<User> 
 
         return Ok($"id={id},userName={userName},roleNames={roleNames}");
     }
-
-   
 }
+

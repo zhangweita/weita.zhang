@@ -1,13 +1,16 @@
 ﻿using ApiDemo.Cache;
 using ApiDemo.Common;
 using ApiDemo.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 
@@ -28,7 +31,7 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
     {
         string userName = req.UserName;
         string password = req.Password;
-        var user = await userManager.FindByNameAsync(userName);
+        User? user = await userManager.FindByNameAsync(userName);
         if (user == null)
         {
             return NotFound($"用户名{userName}不存在");
@@ -74,6 +77,9 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    [HttpPost]
+    public void Login22(Login2Request req) { }
 
     [HttpPost]
     public async Task<IActionResult> CreateUserRole(string userName, string password, string roleName)
@@ -215,5 +221,27 @@ public record Student(int Id, string Name, int Age, string schoolName);
 public record ErrorInfo(int Code, string? Message);
 public record LoginResult(bool IsOK, ProcessInfo[]? Processes);
 public record LoginRequest(string UserName, string Password);
+public class LoginRequestValidator : AbstractValidator<LoginRequest>
+{
+    public LoginRequestValidator(IdDbContext dbContext)
+    {
+        RuleFor(x => x.UserName).NotNull()
+            .MustAsync((name, _) => dbContext.Users.AnyAsync(u => u.UserName == name))
+            .WithMessage("该用户不存在");
+    }
+}
+
+public record Login2Request(string Email, string Password, string Password2);
+public class Login2RequestValidator : AbstractValidator<Login2Request>
+{
+    public Login2RequestValidator()
+    {
+        RuleFor(x => x.Email).NotNull().EmailAddress().Must(x => x.EndsWith("@qq.com") || x.EndsWith("@foxmail.com"))
+            .WithMessage("仅支持qq或foxmail邮箱");
+
+        RuleFor(x => x.Password).NotNull().Length(3, 10).WithMessage("密码长度必须介于3到10之间")
+                                .Equal(x => x.Password2).WithMessage("两次密码必须一致");
+    }
+}
 public record ResetPasswordRequest(string Email, string Token, string NewPassword);
 public record ProcessInfo(int Id, string ProcessName, long WorkingSet6);

@@ -1,6 +1,11 @@
+using ApiDemo.BackgroundServices;
 using ApiDemo.Common;
+using ApiDemo.Controllers;
 using ApiDemo.Filters;
 using ApiDemo.Models;
+using ApiDemo.SignalR;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -8,12 +13,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSignalR();
+
+// 后台服务
+builder.Services.AddHostedService<DemoBgService>();
+builder.Services.AddHostedService<ExplortStatisticBgService>();
+//builder.Services.Configure<HostOptions>(hostOptions =>
+//{
+//    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+//});
+
+// 验证服务
+//builder.Services.AddScoped<IValidator<Login2Request>, Login2RequestValidator>();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationAutoValidation();
+//builder.Services.AddFluentValidationClientsideAdapters();
+
 builder.Services.AddDbContext<IdDbContext>(options =>
 {
     string connStr = builder.Configuration.GetConnectionString("Default")!;
@@ -31,7 +54,6 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
 
-
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);  // 登陆失败锁定时间
     options.Lockout.MaxFailedAccessAttempts = 5;    // 登录允许失败次数
 });
@@ -41,8 +63,8 @@ identityBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<User>>();
 
-builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
 
+builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -88,7 +110,7 @@ builder.Services.AddSwaggerGen(options =>
 string[] urls = ["http://localhost:5173"];
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", builder =>
+    options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins(urls)
                 .AllowAnyMethod()
@@ -146,10 +168,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<ChatRoomHub>("/Hub/ChatRoomHub");
+
 app.MapControllers();
 
 // 允许所有跨域，cors是在ConfigureServices方法中配置的跨域策略名称
-app.UseCors("CorsPolicy");
+app.UseCors();
 
 app.UseHttpsRedirection();
 
