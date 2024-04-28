@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,7 +22,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddStackExchangeRedis("127.0.0.1", options =>
+{
+    options.Configuration.ChannelPrefix = RedisChannel.Literal("SignalR_");
+});
 
 // 后台服务
 builder.Services.AddHostedService<DemoBgService>();
@@ -57,10 +61,10 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);  // 登陆失败锁定时间
     options.Lockout.MaxFailedAccessAttempts = 5;    // 登录允许失败次数
 });
-IdentityBuilder identityBuilder = new(typeof(User), typeof(Role), builder.Services);
+IdentityBuilder identityBuilder = new(typeof(User), typeof(ApiDemo.Models.Role), builder.Services);
 identityBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddDefaultTokenProviders()
-    .AddRoleManager<RoleManager<Role>>()
+    .AddRoleManager<RoleManager<ApiDemo.Models.Role>>()
     .AddUserManager<UserManager<User>>();
 
 
@@ -81,7 +85,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = secKey
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
 
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/Hub/ChatRoomHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 
