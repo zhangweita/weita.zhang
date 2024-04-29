@@ -38,7 +38,7 @@ builder.Services.AddHostedService<ExplortStatisticBgService>();
 // 验证服务
 //builder.Services.AddScoped<IValidator<Login2Request>, Login2RequestValidator>();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddFluentValidationAutoValidation();
+//builder.Services.AddFluentValidationAutoValidation();
 //builder.Services.AddFluentValidationClientsideAdapters();
 
 builder.Services.AddDbContext<IdDbContext>(options =>

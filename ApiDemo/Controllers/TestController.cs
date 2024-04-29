@@ -27,14 +27,14 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
     private readonly IOptionsSnapshot<JWTOptions> jwtOptions = jwtOptions;
 
     [HttpPost]
-    public async Task<IActionResult> Login2(LoginRequest req)
+    public async Task<IActionResult> Login(LoginRequest req)
     {
         string userName = req.UserName;
         string password = req.Password;
         User? user = await userManager.FindByNameAsync(userName);
         if (user == null)
         {
-            return NotFound($"用户名{userName}不存在");
+            return NotFound($"用户名[{userName}]不存在");
         }
         if (await userManager.IsLockedOutAsync(user))
         {
@@ -78,8 +78,6 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    [HttpPost]
-    public void Login22(Login2Request req) { }
 
     [HttpPost]
     public async Task<IActionResult> CreateUserRole(string userName, string password, string roleName)
@@ -142,7 +140,7 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
     }
 
     const string key = "[eQf4jA&}syCoMlI-fF0]{!fA@!d!l";
-
+    #region jwt操作
     //[HttpPost]
     //public string CreateJwtToken(UserInfo userInfo)
     //{
@@ -213,6 +211,7 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
     //    var bytes = Convert.FromBase64String(s);
     //    return Encoding.UTF8.GetString(bytes);
     //}
+    #endregion
 }
 public record UserInfo(string Id, string Name, string[] Roles, string Passport);
 
@@ -225,7 +224,8 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator(IdDbContext dbContext)
     {
-        RuleFor(x => x.UserName).NotNull()
+        RuleFor(x => x.UserName)
+            .Must(name=>!string.IsNullOrEmpty(name)).WithMessage("用户名不能为空")
             .MustAsync((name, _) => dbContext.Users.AnyAsync(u => u.UserName == name))
             .WithMessage("该用户不存在");
     }
