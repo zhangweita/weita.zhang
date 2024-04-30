@@ -22,7 +22,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSignalR().AddStackExchangeRedis("127.0.0.1", options =>
+builder.Services.AddSignalR(options =>
+{
+}).AddStackExchangeRedis("127.0.0.1", options =>
 {
     options.Configuration.ChannelPrefix = RedisChannel.Literal("SignalR_");
 });
@@ -67,8 +69,9 @@ identityBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddRoleManager<RoleManager<ApiDemo.Models.Role>>()
     .AddUserManager<UserManager<User>>();
 
-
+builder.Services.Configure<ConnStringOptions>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

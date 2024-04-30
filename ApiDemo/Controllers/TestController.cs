@@ -1,16 +1,14 @@
-﻿using ApiDemo.Cache;
-using ApiDemo.Common;
+﻿using ApiDemo.Common;
 using ApiDemo.Models;
+using ApiDemo.SignalR;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,12 +17,13 @@ namespace ApiDemo.Controllers;
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class TestController(ILogger<TestController> logger, RoleManager<Role> roleManager, UserManager<User> userManager,
-IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
+IOptionsSnapshot<JWTOptions> jwtOptions, IHubContext<ChatRoomHub> hubContext) : ControllerBase
 {
     private readonly ILogger<TestController> logger = logger;
     private readonly RoleManager<Role> roleManager = roleManager;
     private readonly UserManager<User> userManager = userManager;
     private readonly IOptionsSnapshot<JWTOptions> jwtOptions = jwtOptions;
+    private readonly IHubContext<ChatRoomHub> hubContext = hubContext;
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginRequest req)
@@ -108,7 +107,7 @@ IOptionsSnapshot<JWTOptions> jwtOptions) : ControllerBase
                 return BadRequest(r.Errors);
             }
         }
-
+        await hubContext.Clients.All.SendAsync("UserAdded", userName);
         return Ok();
     }
 
