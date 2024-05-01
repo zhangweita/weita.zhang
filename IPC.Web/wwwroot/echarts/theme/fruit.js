@@ -1,178 +1,55 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['exports', 'echarts'], factory);
-    } else if (
-        typeof exports === 'object' &&
-        typeof exports.nodeName !== 'string'
-    ) {
-        // CommonJS
-        factory(exports, require('echarts/lib/echarts'));
-    } else {
-        // Browser globals
-        factory({}, root.echarts);
-    }
-})(this, function(exports, echarts) {
-    var log = function(msg) {
-        if (typeof console !== 'undefined') {
-            console && console.error && console.error(msg);
-        }
-    };
-    if (!echarts) {
-        log('ECharts is not Loaded');
-        return;
-    }
-
-    var colorPalette = [
-        '#ffcb6a',
-        '#ffa850',
-        '#ffe2c4',
-        '#e5834e',
-        '#ffb081',
-        '#f7826e',
-        '#faac9e',
-        '#fcd5cf'
-    ];
-
-    var theme = {
-        color: colorPalette,
-
-        title: {
-            textStyle: {
-                fontWeight: 'normal',
-                color: '#ffcb6a'
-            }
-        },
-
-        visualMap: {
-            color: ['#ffcb6a', '#ffa850']
-        },
-
-        toolbox: {
-            color: ['#ffcb6a', '#ffcb6a', '#ffcb6a', '#ffcb6a']
-        },
-
-        tooltip: {
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            axisPointer: {
-                // Axis indicator, coordinate trigger effective
-                type: 'line', // The default is a straight line： 'line' | 'shadow'
-                lineStyle: {
-                    // Straight line indicator style settings
-                    color: '#ffcb6a',
-                    type: 'dashed'
-                },
-                crossStyle: {
-                    color: '#ffcb6a'
-                },
-                shadowStyle: {
-                    // Shadow indicator style settings
-                    color: 'rgba(200,200,200,0.3)'
-                }
-            }
-        },
-
-        // Area scaling controller
-        dataZoom: {
-            dataBackgroundColor: '#eee', // Data background color
-            fillerColor: 'rgba(200,200,200,0.2)', // Fill the color
-            handleColor: '#ffcb6a' // Handle color
-        },
-
-        timeline: {
-            lineStyle: {
-                color: '#ffcb6a'
-            },
-            controlStyle: {
-                color: '#ffcb6a',
-                borderColor: '#ffcb6a'
-            }
-        },
-
-        candlestick: {
-            itemStyle: {
-                color: '#ffa850',
-                color0: '#ffe2c4'
-            },
-            lineStyle: {
-                width: 1,
-                color: '#ffb081',
-                color0: '#e5834e'
-            },
-            areaStyle: {
-                color: '#e5834e',
-                color0: '#fcd5cf'
-            }
-        },
-
-        chord: {
-            padding: 4,
-            itemStyle: {
-                color: '#fcd5cf',
-                borderWidth: 1,
-                borderColor: 'rgba(128, 128, 128, 0.5)'
-            },
-            lineStyle: {
-                color: 'rgba(128, 128, 128, 0.5)'
-            },
-            areaStyle: {
-                color: '#e5834e'
-            }
-        },
-
-        map: {
-            itemStyle: {
-                color: '#ffe2c4'
-            },
-            areaStyle: {
-                color: '#ddd'
-            },
-            label: {
-                color: '#c12e34'
-            }
-        },
-
-        graph: {
-            itemStyle: {
-                color: '#f2385a'
-            },
-            linkStyle: {
-                color: '#ffcb6a'
-            }
-        },
-
-        gauge: {
-            axisLine: {
-                lineStyle: {
-                    color: [
-                        [0.2, '#ffa850'],
-                        [0.8, '#ffcb6a'],
-                        [1, '#ffb081']
-                    ],
-                    width: 8
-                }
-            }
-        }
-    };
-
-    echarts.registerTheme('fruit', theme);
-});
+��을 만든 시간을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.grfLocksSupported">
+      <summary>이 스트림 또는 바이트 배열이 지원하는 영역 잠금 형식을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.grfMode">
+      <summary>개체가 열렸을때 명시된 액세스 모드를 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.grfStateBits">
+      <summary>IStorage::SetStateBits 메서드가 설정한 가장 최근 값인 저장소 개체의 현재 상태를 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.mtime">
+      <summary>이 저장소, 스트림 또는 바이트 배열에 대한 최종 수정 시간을 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.pwcsName">
+      <summary>이 구조체가 설명하는 개체의 이름이 들어 있으며 null로 끝나는 문자열에 대한 포인터를 나타냅니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.reserved">
+      <summary>다음에 사용하도록 예약됩니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STATSTG.type">
+      <summary>STGTY 열거형의 값 중 하나인 저장소 개체의 형식을 나타냅니다.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.ComTypes.STGMEDIUM">
+      <summary>STGMEDIUM 구조체의 관리되는 정의를 제공합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STGMEDIUM.pUnkForRelease">
+      <summary>받는 프로세스가 ReleaseStgMedium 함수를 호출할 때 보내는 프로세스에서 저장소를 해제하는 방법을 제어할 수 있도록 하는 인터페이스 인스턴스에 대한 포인터를 나타냅니다.<see cref="F:System.Runtime.InteropServices.ComTypes.STGMEDIUM.pUnkForRelease" />가 null이면 ReleaseStgMedium에서는 기본 프로시저를 사용하여 저장소를 해제하고, 그렇지 않으면 ReleaseStgMedium에서는 지정된 IUnknown 인터페이스를 사용합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STGMEDIUM.tymed">
+      <summary>저장 미디어 형식을 지정합니다.마샬링 및 역마샬링 루틴에서는 이 값을 사용하여 공용 구조체 멤버가 사용되었는지를 확인합니다.이 값은 <see cref="T:System.Runtime.InteropServices.ComTypes.TYMED" /> 열거형의 요소 중 하나여야 합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.STGMEDIUM.unionmember">
+      <summary>받는 프로세스에서 전송 중인 데이터에 액세스하는 데 사용할 수 있는 핸들, 문자열 또는 인터페이스 포인터를 나타냅니다.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.ComTypes.SYSKIND">
+      <summary>대상 운영 체제 플랫폼을 식별합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.SYSKIND.SYS_MAC">
+      <summary>형식 라이브러리에 대한 대상 운영 체제는 Apple Macintosh입니다.기본적으로 모든 데이터 필드는 짝수 바이트 경계로 맞추어집니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.SYSKIND.SYS_WIN16">
+      <summary>형식 라이브러리에 대한 대상 운영 체제는 16비트 Windows 시스템입니다.기본적으로 데이터 필드는 패킹됩니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.SYSKIND.SYS_WIN32">
+      <summary>형식 라이브러리에 대한 대상 운영 체제는 32비트 Windows 시스템입니다.기본적으로 데이터 필드는 저절로 맞추어지는데 예를 들면 2바이트 정수는 짝수 바이트 경계로, 4바이트 정수는 네 단어 경계 등으로 맞추어집니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.SYSKIND.SYS_WIN64">
+      <summary>형식 라이브러리에 대한 대상 운영 체제는 64비트 Windows 시스템입니다.</summary>
+    </member>
+    <member name="T:System.Runtime.InteropServices.ComTypes.TYMED">
+      <summary>TYMED 구조체의 관리되는 정의를 제공합니다.</summary>
+    </member>
+    <member name="F:System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ENHMF">
+      <summary>저장 미디어가 확장 메타파일입니다.<see cref="T:System.Runtime.InteropServices.ComTypes.STGMEDIUM" /><see cref="F:System.Runtime.InteropServices.ComTypes.STGMEDIUM.pUnkForRelease" /> 멤버가 null이면 대상 프로세스에서 D
