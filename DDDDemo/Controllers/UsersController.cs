@@ -12,7 +12,7 @@ public class UsersController(ILogger<UsersController> logger, UserDbContext cont
     public async Task<IActionResult> Update(Guid id, UpdateUserRequest req)
     {
         User? user = await context.Users.FindAsync(id);
-        user.ChangeAge(req.Age);
+        user!.ChangeAge(req.Age);
         user.ChangeEmail(req.Email);
         user.ChangeNickName(req.NickName);
         await context.SaveChangesAsync();

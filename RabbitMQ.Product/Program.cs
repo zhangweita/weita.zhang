@@ -1,5 +1,4 @@
-﻿
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System.Text;
 
 ConnectionFactory factory = new()
@@ -18,7 +17,7 @@ using var connection = factory.CreateConnection();
 while (true)
 {
     string msg = DateTime.Now.TimeOfDay.ToString();
-    using (var channel = connection.CreateModel())
+    using (var channel = connection.CreateModel())      // 创建虚拟信道
     {
         var properties = channel.CreateBasicProperties();
         properties.DeliveryMode = 2;    // Non-persistent (1) or persistent (2).
@@ -26,7 +25,7 @@ while (true)
         byte[] body = Encoding.UTF8.GetBytes(msg);
         channel.BasicPublish(exchange: exchangeName, routingKey: routingKey, mandatory: true,
                         basicProperties: properties, body: body);
-
     }
-
+    Console.WriteLine($"发布了消息：{msg}");
+    Thread.Sleep(1000);
 }
