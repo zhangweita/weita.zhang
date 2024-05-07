@@ -3,6 +3,7 @@ using Users.Domain.Events;
 
 namespace Users.Domain;
 
+[UnitOfWork]
 public class UserDomainService(IUserDomainRepository repository, ISmsCodeSender smsSender)
 {
     private readonly IUserDomainRepository repository = repository;
@@ -32,8 +33,7 @@ public class UserDomainService(IUserDomainRepository repository, ISmsCodeSender 
         }
 
         // 登录失败日志交由领域事件发布
-        UserAccessResultEvent eventItem = new(phoneNum, result);
-        await repository.PublishEventAsync(eventItem);
+        await repository.PublishEventAsync(new UserAccessResultEvent(phoneNum, result));
         return result;
     }
 

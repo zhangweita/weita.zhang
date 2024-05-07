@@ -7,7 +7,7 @@ using Users.Domain.Events;
 
 namespace Users.Infrastructure;
 
-internal class UserDomainRepository(UserDbContext dbContext, IDistributedCache distributedCache, IMediator mediator) : IUserDomainRepository
+public class UserDomainRepository(UserDbContext dbContext, IDistributedCache distributedCache, IMediator mediator) : IUserDomainRepository
 {
     private readonly UserDbContext dbContext = dbContext;
     private readonly IDistributedCache distributedCache = distributedCache;
@@ -29,6 +29,7 @@ internal class UserDomainRepository(UserDbContext dbContext, IDistributedCache d
         UserLoginHistory history = new(user?.Id, phoneNumber, msg);
         dbContext.LoginHistories.Add(history);
     }
+
     public Task PublishEventAsync(UserAccessResultEvent eventData)
     {
         return mediator.Publish(eventData);
@@ -46,8 +47,10 @@ internal class UserDomainRepository(UserDbContext dbContext, IDistributedCache d
     public Task SavePhoneCodeAsync(PhoneNumber phoneNumber, string code)
     {
         string fullNumber = phoneNumber.RegionCode + phoneNumber.Number;
-        DistributedCacheEntryOptions options = new();
-        options.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60);
+        DistributedCacheEntryOptions options = new()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
+        };
         distributedCache.SetString($"LoginByPhoneAndCode_Code_{fullNumber}", code, options);
         return Task.CompletedTask;
     }

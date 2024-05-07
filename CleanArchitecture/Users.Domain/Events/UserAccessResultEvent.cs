@@ -1,9 +1,10 @@
-﻿using Users.Domain.Entities;
+﻿using MediatR;
+using Users.Domain.Entities;
 
 namespace Users.Domain.Events;
 
-public class UserAccessResultEvent(PhoneNumber phoneNum, UserAccessResult result)
+public class UserAccessResultEvent(PhoneNumber phoneNum, UserAccessResult result) : INotification
 {
-    private PhoneNumber phoneNum = phoneNum;
-    private UserAccessResult result = result;
+    public PhoneNumber PhoneNumber { get; init; } = phoneNum;
+    public UserAccessResult Result { get; init; } = result;
 }
